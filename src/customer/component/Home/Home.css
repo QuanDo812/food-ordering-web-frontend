@@ -1,0 +1,23 @@
+
+.banner{
+    background-image: url("https://authenticadventure.com.vn/wp-content/uploads/2023/01/hanoi-street-food-tours.jpg");
+    background-size: cover; /* Adjust as needed */
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 95vh;
+}
+
+
+/* .animate-fadeInUp {
+  animation: fadeInUp 1s ease-in-out;
+}
+.delay-100 {
+  animation-delay: 0.1s;
+} */
+
+.cover{
+    width: 100%;
+    height: 95vh;
+    background-color: #000;
+    opacity: .3;
+}
