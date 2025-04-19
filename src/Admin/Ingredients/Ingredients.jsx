@@ -94,21 +94,21 @@ const Ingredients = () => {
                   </TableHead>
                   <TableBody>
                     {ingredients?.ingredients?.map((item) => (
-                      <TableRow key={item.id} hover>
-                        <TableCell>{item.id}</TableCell>
-                        <TableCell>{item.name}</TableCell>
-                        <TableCell>{item.ingredientCategory?.name}</TableCell>
+                      <TableRow key={item?.id} hover>
+                        <TableCell>{item?.id}</TableCell>
+                        <TableCell>{item?.name}</TableCell>
+                        <TableCell>{item?.ingredientCategory?.name}</TableCell>
                         <TableCell>
-                          {item.price.toLocaleString()} VNĐ
+                          {item?.price != null ? item?.price.toLocaleString() : ""} VNĐ
                         </TableCell>
                         <TableCell>
                           <Button
                             size="small"
                             variant="outlined"
-                            color={item.inStoke ? "success" : "error"}
-                            onClick={() => handleUpdateStock(item.id)}
+                            color={item?.inStoke ? "success" : "error"}
+                            onClick={() => handleUpdateStock(item?.id)}
                           >
-                            {item.inStoke ? "Còn hàng" : "Hết hàng"}
+                            {item?.inStoke ? "Còn hàng" : "Hết hàng"}
                           </Button>
                         </TableCell>
                       </TableRow>

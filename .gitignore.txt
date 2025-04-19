@@ -1,0 +1,11 @@
+# Ignore node_modules
+node_modules/
+
+# Ignore public (nếu không cần)
+public/
+
+# Ignore config files nếu cần
+*.log
+.env
+tailwind.config.js
+package-lock.json

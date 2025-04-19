@@ -28,20 +28,20 @@ import {
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import { categorizedIngredients } from "../../util/categorizedIngredients";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Create} from "@mui/icons-material";
+import { Create } from "@mui/icons-material";
 
 const MenuItemTable = ({ isDashboard, name }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { menu, ingredients, restaurant,auth } = useSelector((store) => store);
+  const { menu, ingredients, restaurant, auth } = useSelector((store) => store);
   const { id } = useParams();
-  const jwt=localStorage.getItem("jwt");
+  const jwt = localStorage.getItem("jwt");
 
   useEffect(() => {
-    
-      if(restaurant.usersRestaurant){
-       dispatch( getMenuItemsByRestaurantId({
+
+    if (restaurant.usersRestaurant) {
+      dispatch(getMenuItemsByRestaurantId({
         restaurantId: restaurant.usersRestaurant?.id,
         jwt: localStorage.getItem("jwt"),
         seasonal: false,
@@ -49,10 +49,10 @@ const MenuItemTable = ({ isDashboard, name }) => {
         nonveg: false,
         foodCategory: "",
       }));
-      }
-      
-    
-  }, [ingredients?.update,restaurant.usersRestaurant]);
+    }
+
+
+  }, [ingredients?.update, restaurant.usersRestaurant]);
 
   // console.log(
   //   "-------- ",
@@ -60,14 +60,14 @@ const MenuItemTable = ({ isDashboard, name }) => {
   //   categorizedIngredients(menu.menuItems[1].ingredients)
   // );
 
-  
+
 
   const handleFoodAvialability = (foodId) => {
-    dispatch(updateMenuItemsAvailability({foodId,jwt:auth.jwt || jwt}));
+    dispatch(updateMenuItemsAvailability({ foodId, jwt: auth.jwt || jwt }));
   };
 
   const handleDeleteFood = (foodId) => {
-    dispatch(deleteFoodAction({foodId,jwt:auth.jwt || jwt}));
+    dispatch(deleteFoodAction({ foodId, jwt: auth.jwt || jwt }));
   };
 
   return (
@@ -111,14 +111,14 @@ const MenuItemTable = ({ isDashboard, name }) => {
               {menu.menuItems?.map((item) => (
                 <TableRow
                   hover
-                  key={item.id}
+                  key={item?.id}
                   sx={{
                     "&:last-of-type td, &:last-of-type th": { border: 0 },
                   }}
                 >
                   <TableCell>
                     {" "}
-                    <Avatar alt={item.name} src={item.images[0]} />{" "}
+                    <Avatar alt={item?.name} src={item?.images[0]} />{" "}
                   </TableCell>
 
                   <TableCell
@@ -131,9 +131,9 @@ const MenuItemTable = ({ isDashboard, name }) => {
                           fontSize: "0.875rem !important",
                         }}
                       >
-                        {item.name}
+                        {item?.name}
                       </Typography>
-                      <Typography variant="caption">{item.brand}</Typography>
+                      <Typography variant="caption">{item?.brand}</Typography>
                     </Box>
                   </TableCell>
 
@@ -149,7 +149,7 @@ const MenuItemTable = ({ isDashboard, name }) => {
                               category
                             ].map((ingredient, index) => (
                               <div
-                                key={ingredient.id}
+                                key={ingredient?.id}
                                 className="flex gap-1 items-center"
                               >
                                 <div>
@@ -158,10 +158,10 @@ const MenuItemTable = ({ isDashboard, name }) => {
                                   />
                                 </div>
                                 <div
-                                  key={ingredient.id}
+                                  key={ingredient?.id}
                                   className="flex gap-4 items-center"
                                 >
-                                  <p>{`${ingredient.name} (${ingredient.price.toLocaleString()} VNĐ)`}</p>
+                                  <p>{`${ingredient?.name} (${ingredient?.price != null ? ingredient?.price.toLocaleString() : ''} VNĐ)`}</p>
                                 </div>
                               </div>
                             ))}
@@ -171,22 +171,22 @@ const MenuItemTable = ({ isDashboard, name }) => {
                     </TableCell>
                   )}
                   <TableCell sx={{ textAlign: "center" }}>
-                    {item.price.toLocaleString()} VNĐ
+                    {item?.price != null ? item?.price.toLocaleString() : ''} VNĐ
                   </TableCell>
 
                   <TableCell sx={{ textAlign: "center" }}>
                     <Button
-                      color={item.available ? "success" : "error"}
+                      color={item?.available ? "success" : "error"}
                       variant="text"
-                      onClick={() => handleFoodAvialability(item.id)}
+                      onClick={() => handleFoodAvialability(item?.id)}
                     >
-                      {item.available ? "in stock" : "out of stock"}
+                      {item?.available ? "in stock" : "out of stock"}
                     </Button>
                   </TableCell>
 
                   {!isDashboard && (
                     <TableCell sx={{ textAlign: "center" }}>
-                      <IconButton onClick={() => handleDeleteFood(item.id)}>
+                      <IconButton onClick={() => handleDeleteFood(item?.id)}>
                         <DeleteIcon color="error" />
                       </IconButton>
                     </TableCell>
