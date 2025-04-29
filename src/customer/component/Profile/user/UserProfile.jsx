@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 
 const UserProfile = () => {
   const [selectedFile, setSelectedFile] = useState(null);
-  const {auth} = useSelector((store) => store)
+  const { auth } = useSelector((store) => store)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -34,10 +34,12 @@ const UserProfile = () => {
       phone: formik.values.phone,
       dob: `${formik.values.day}-${formik.values.month}-${formik.values.year}`,
     };
-    
-    dispatch(updateProfile(req,auth?.jwt||localStorage.getItem("jwt")))
+
+    dispatch(updateProfile(req, auth?.jwt || localStorage.getItem("jwt")))
+    navigate('/my-profile')
   }
-  
+  console.log("auth", auth)
+
 
   const formik = useFormik({
     initialValues: {
@@ -45,9 +47,9 @@ const UserProfile = () => {
       name: auth?.user?.fullName,
       phone: auth?.user?.phone || "3333333333",
       gender: auth?.user?.gender || "Nam",
-      day: auth?.user?.dob.substring(0, 2) || "",
-      month: auth?.user?.dob.substring(3, 5) || "",
-      year: auth?.user?.dob.substring(6) || "",
+      day: auth?.user?.dob != null ? auth?.user?.dob.substring(0, 2) : "",
+      month: auth?.user?.dob != null ? auth?.user?.dob.substring(3, 5) : "",
+      year: auth?.user?.dob != null ? auth?.user?.dob.substring(6) : "",
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Vui lòng nhập tên"),
@@ -56,9 +58,9 @@ const UserProfile = () => {
       month: Yup.string().required("Chọn tháng"),
       year: Yup.string().required("Chọn năm"),
       phone: Yup.string()
-      .required("Vui lòng nhập số điện thoại")
-      .matches(/^\d{10}$/, "Số điện thoại phải có đúng 10 chữ số"),
-    
+        .required("Vui lòng nhập số điện thoại")
+        .matches(/^\d{10}$/, "Số điện thoại phải có đúng 10 chữ số"),
+
     }),
     onSubmit: handleUpdateProfile
   });
@@ -103,15 +105,15 @@ const UserProfile = () => {
             />
 
 
-              <TextField
-                label="Số điện thoại"
-                name="phone"
-                value={formik.values.phone}
-                fullWidth
-                onChange={formik.handleChange}
-                error={formik.touched.phone && Boolean(formik.errors.phone)}
+            <TextField
+              label="Số điện thoại"
+              name="phone"
+              value={formik.values.phone}
+              fullWidth
+              onChange={formik.handleChange}
+              error={formik.touched.phone && Boolean(formik.errors.phone)}
               helperText={formik.touched.phone && formik.errors.phone}
-              />
+            />
 
             <Box>
               <Typography className="mb-1">Giới tính</Typography>
@@ -148,8 +150,8 @@ const UserProfile = () => {
                     },
                   },
                 }}
-              
-                
+
+
               >
                 {[...Array(31)].map((_, i) => (
                   <MenuItem key={i + 1} value={String(i + 1).padStart(2, "0")}>
@@ -175,7 +177,7 @@ const UserProfile = () => {
                     },
                   },
                 }}
-                
+
               >
                 {["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"].map((m) => (
                   <MenuItem key={m} value={m}>
@@ -201,7 +203,7 @@ const UserProfile = () => {
                     },
                   },
                 }}
-                
+
               >
                 {[...Array(100)].map((_, i) => {
                   const y = 2020 - i;
@@ -214,24 +216,24 @@ const UserProfile = () => {
               </TextField>
             </Box>
 
-<Box className="flex gap-4">
+            <Box className="flex gap-4">
 
-            <Button
-              type="submit"
-              variant="contained"
-              sx ={{bgcolor: "#FF5722"}}
-              className="mt-4 w-32"
-            >
-              Lưu
-            </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{ bgcolor: "#FF5722" }}
+                className="mt-4 w-32"
+              >
+                Lưu
+              </Button>
 
-            <Button
-              onClick={handleResetPassword}
-              variant="contained"
-              className="w-60"
-            >
-              Thay đổi mật khẩu
-            </Button>
+              <Button
+                onClick={handleResetPassword}
+                variant="contained"
+                className="w-60"
+              >
+                Thay đổi mật khẩu
+              </Button>
             </Box>
           </Box>
 
@@ -254,8 +256,8 @@ const UserProfile = () => {
         </Box>
       </form>
       <Box className="mt-10">
-      
-            </Box>
+
+      </Box>
     </Box>
   );
 };

@@ -39,16 +39,15 @@ const orderStatus = [
   { label: "Pending", value: "PENDING" },
   { label: "Completed", value: "COMPLETED" },
   { label: "Out For Delivery", value: "OUT_FOR_DELIVERY" },
-  { label: "Delivered", value: "DELIVERED" },
-  { label: "Paid", value: "PAID" }
+  { label: "Delivering", value: "DELIVERING" },
 ];
 
-const OrdersTable = ({name }) => {
+const OrdersTable = ({ name }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ status: "", sort: "" });
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-  const {auth, restaurant, restaurantsOrder } = useSelector((store) => store);
+  const { auth, restaurant, restaurantsOrder } = useSelector((store) => store);
   const [anchorElArray, setAnchorElArray] = useState([]);
   const { id } = useParams();
 
@@ -67,7 +66,7 @@ const OrdersTable = ({name }) => {
 
   const handleUpdateOrder = (orderId, orderStatus, index) => {
     handleUpdateStatusMenuClose(index);
-    dispatch(updateOrderStatus({ orderId, orderStatus,jwt }));
+    dispatch(updateOrderStatus({ orderId, orderStatus, jwt }));
   };
 
   console.log("restaurants orders store ", restaurantsOrder)
@@ -87,17 +86,17 @@ const OrdersTable = ({name }) => {
           <Table sx={{}} aria-label="table in dashboard">
             <TableHead>
               <TableRow>
-              <TableCell>Id</TableCell>
+                <TableCell>Id</TableCell>
                 <TableCell>Hình ảnh</TableCell>
                 {/* {!isDashboard && <TableCell>Title</TableCell>} */}
                 <TableCell>Khách hàng</TableCell>
                 <TableCell>Giá</TableCell>
-             
+
                 <TableCell>Tên</TableCell>
                 <TableCell>Thành phần</TableCell>
                 <TableCell>Thời gian đặt</TableCell>
                 <TableCell>Trạng thái</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>Cập nhật</TableCell>
+                <TableCell sx={{ textAlign: "center" }}>Cập nhật</TableCell>
                 {/* {!isDashboard && (
                   <TableCell sx={{ textAlign: "center" }}>Delete</TableCell>
                 )} */}
@@ -132,7 +131,7 @@ const OrdersTable = ({name }) => {
                     </TableCell>
 
                     <TableCell>{item?.totalAmount.toLocaleString()} VNĐ</TableCell>
-                    
+
                     <TableCell className="">
                       {item?.orderItems.map((orderItem) => (
                         <p>
@@ -140,91 +139,86 @@ const OrdersTable = ({name }) => {
                         </p>
                       ))}
                     </TableCell>
-                  <TableCell className="space-y-2">
+                    <TableCell className="space-y-2">
                       {item?.orderItems.map((orderItem) =>
-                      <div className="flex gap-1 flex-wrap">
-                       { orderItem?.ingredients?.map((ingre) => (
-                          <Chip label={ingre} />
-                        ))}
-                      </div>
-                        
+                        <div className="flex gap-1 flex-wrap">
+                          {orderItem?.ingredients?.map((ingre) => (
+                            <Chip label={ingre} />
+                          ))}
+                        </div>
+
                       )}
                     </TableCell>
                     <TableCell>{item?.createdAt}</TableCell>
-                  <TableCell className="text-white">
-                  <Chip
-  label={item?.orderStatus}
-  size="small"
-  sx={{
-    fontWeight: "bold",
-    textAlign: "center",
-    color: "white",
-    backgroundColor:
-      item?.orderStatus === "PENDING"
-        ? "rgb(255, 193, 7)"        // Vàng
-        : item?.orderStatus === "DELIVERED" || item?.orderStatus === "COMPLETED"
-        ? "rgb(76, 175, 80)"        // Xanh lá
-        : item?.orderStatus === "PAID"
-        ? "rgb(33, 150, 243)"       // Xanh dương
-        : "rgb(244, 67, 54)"        // Đỏ (default)
-  }}
-/>
+                    <TableCell className="text-white">
+                      <Chip
+                        label={item?.orderStatus}
+                        size="small"
+                        sx={{
+                          fontWeight: "bold",
+                          textAlign: "center",
+                          color: "white",
+                          backgroundColor:
+                            item?.orderStatus === "PENDING"
+                              ? "rgb(255, 193, 7)"        // Vàng
+                              : item?.orderStatus === "COMPLETED"
+                                ? "rgb(76, 175, 80)"        // Xanh lá
+                                : item?.orderStatus === "DELIVERING"
+                                  ? "rgb(33, 150, 243)"       // Xanh dương
+                                  : "rgb(244, 67, 54)"        // Đỏ (default)
+                        }}
+                      />
 
                     </TableCell>
-                    
-                      <TableCell
-                        sx={{ textAlign: "center" }}
-                        className="text-white"
-                      >
-                        <div>
-                          <Button
-                            id={`basic-button-${item?.id}`}
-                            aria-controls={`basic-menu-${item?.id}`}
-                            aria-haspopup="true"
-                            aria-expanded={Boolean(anchorElArray[index])}
-                            onClick={(event) =>
-                              handleUpdateStatusMenuClick(event, index)
-                            }
-                          >
-                            Trạng thái
-                          </Button>
-                          <Menu
-                            id={`basic-menu-${item?.id}`}
-                            anchorEl={anchorElArray[index]}
-                            open={Boolean(anchorElArray[index])}
-                            onClose={() => handleUpdateStatusMenuClose(index)}
-                            MenuListProps={{
-                              "aria-labelledby": `basic-button-${item?.id}`,
-                            }}
-                          >
-                            {orderStatus.map((s) => (
-                              <MenuItem
-                                onClick={() =>
-                                  handleUpdateOrder(item?.id, s.value, index)
-                                }
-                              >
-                                {s.label}
-                              </MenuItem>
-                            ))}
-                          </Menu>
-                        </div>
-                      </TableCell>
-                    
-            
+
+                    <TableCell
+                      sx={{ textAlign: "center" }}
+                      className="text-white"
+                    >
+                      <div>
+                        <Button
+                          id={`basic-button-${item?.id}`}
+                          aria-controls={`basic-menu-${item?.id}`}
+                          aria-haspopup="true"
+                          aria-expanded={Boolean(anchorElArray[index])}
+                          onClick={(event) =>
+                            handleUpdateStatusMenuClick(event, index)
+                          }
+                        >
+                          Trạng thái
+                        </Button>
+                        <Menu
+                          id={`basic-menu-${item?.id}`}
+                          anchorEl={anchorElArray[index]}
+                          open={Boolean(anchorElArray[index])}
+                          onClose={() => handleUpdateStatusMenuClose(index)}
+                          MenuListProps={{
+                            "aria-labelledby": `basic-button-${item?.id}`,
+                          }}
+                        >
+                          {orderStatus.map((s) => (
+                            <MenuItem
+                              onClick={() =>
+                                handleUpdateOrder(item?.id, s.value, index)
+                              }
+                            >
+                              {s.label}
+                            </MenuItem>
+                          ))}
+                        </Menu>
+                      </div>
+                    </TableCell>
+
+
                   </TableRow>
                 ))}
             </TableBody>
           </Table>
         </TableContainer>
       </Card>
-      
 
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={restaurantsOrder?.loading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+
+
     </Box>
   );
 };

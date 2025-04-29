@@ -68,12 +68,8 @@ export const getMenuItemsByRestaurantId = (reqData) => {
     dispatch(getMenuItemsByRestaurantIdRequest());
     try {
       const { data } = await api.get(
-        `/api/foods/restaurant/${reqData.restaurantId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${reqData.jwt}`,
-          },
-        }
+        `/api/foods/restaurant/${reqData.restaurantId}`
+
       );
       console.log("menu item by restaurants ", data);
       dispatch(getMenuItemsByRestaurantIdSuccess(data));
@@ -88,12 +84,7 @@ export const getMenuItemsByFoodId = (reqData) => {
     dispatch({ type: GET_ITEM_BY_ID_REQUEST });
     try {
       const { data } = await api.get(
-        `/api/foods/${reqData.foodId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${reqData.jwt}`,
-          },
-        }
+        `/api/foods/${reqData.foodId}`
       );
       console.log("menu item by foodId ", data);
       dispatch({ type: GET_ITEM_BY_ID_SUCCESS, payload: data });
@@ -108,11 +99,7 @@ export const searchMenuItem = ({ keyword, jwt }) => {
   return async (dispatch) => {
     dispatch({ type: SEARCH_MENU_ITEM_REQUEST });
     try {
-      const { data } = await api.get(`api/food/search?name=${keyword}`, {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
+      const { data } = await api.get(`api/foods/search?name=${keyword}`);
       console.log("data ----------- ", data);
       dispatch({ type: SEARCH_MENU_ITEM_SUCCESS, payload: data });
     } catch (error) {
@@ -126,12 +113,7 @@ export const getAllIngredientsOfMenuItem = (reqData) => {
     dispatch(getMenuItemsByRestaurantIdRequest());
     try {
       const { data } = await api.get(
-        `api/food/restaurant/${reqData.restaurantId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${reqData.jwt}`,
-          },
-        }
+        `api/foods/restaurant/${reqData.restaurantId}`
       );
       console.log("menu item by restaurants ", data);
       dispatch(getMenuItemsByRestaurantIdSuccess(data));
@@ -165,7 +147,7 @@ export const updateMenuItemsAvailability = ({ foodId, jwt }) => {
 export const deleteFoodAction = ({ foodId, jwt }) => async (dispatch) => {
   dispatch({ type: DELETE_MENU_ITEM_REQUEST });
   try {
-    const { data } = await api.delete(`/api/admin/food/${foodId}`, {
+    const { data } = await api.delete(`/api/admin/foods/${foodId}`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },

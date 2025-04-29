@@ -28,14 +28,11 @@ export default function Search() {
   const isLogin = auth.jwt != null || localStorage.getItem("jwt") != null;
 
   useEffect(() => {
-    if (isLogin) {
-      dispatch(
-        getAllRestaurantsDistance({
-          jwt: auth?.jwt || localStorage.getItem("jwt"),
-          address: query,
-        })
-      );
-    }
+    dispatch(
+      getAllRestaurantsDistance({
+        address: query,
+      })
+    );
   }, [query]);
 
   // Tìm kiếm thông minh
@@ -69,7 +66,7 @@ export default function Search() {
       }
       return b.rating - a.rating;
     });
-  
+
   }
 
   return (

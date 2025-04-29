@@ -56,35 +56,27 @@ const AutoCompleteAddress = ({ onSelect }) => {
       alert("Vui lòng nhập ít nhất 3 ký tự để tìm kiếm!");
       return;
     }
-    if(isLogin){
-      console.log("finding..............")
-      // dispatch(getAllRestaurantsDistance({jwt: auth?.jwt || localStorage.getItem("jwt"), address: query}))
-      navingate(`/search/${query}`)
-    }
+    console.log("finding..............")
+    // dispatch(getAllRestaurantsDistance({jwt: auth?.jwt || localStorage.getItem("jwt"), address: query}))
+    navingate(`/search/${query}`)
   };
 
   return (
     <div style={{ position: "relative", width: "500px", margin: "0 auto" }}>
-      {!isLogin && (
-        <p style={{ color: "red", fontSize: "18px", marginTop: "5px" }}>
-          Bạn cần đăng nhập để nhập địa chỉ!
-        </p>
-      )}
 
       <div style={{ display: "flex", gap: "5px" }}>
         <input
           type="text"
-          value={isLogin ? query : "Hoc vien Cong nghe Buu Chinh Vien Thong, Ha Noi"}
+          value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Nhập địa chỉ..."
-          disabled={!isLogin}
           style={{
             flex: 1,
             color: "black",
             padding: "10px",
             fontSize: "16px",
-            backgroundColor: isLogin ? "white" : "#f0f0f0",
-            cursor: isLogin ? "text" : "not-allowed",
+            backgroundColor: "white",
+            cursor: "text",
             border: "1px solid #ccc",
             borderRadius: "5px",
           }}
@@ -93,15 +85,14 @@ const AutoCompleteAddress = ({ onSelect }) => {
         {/* Nút Search */}
         <button
           onClick={handleSubmit}
-          disabled={!isLogin}
           style={{
             padding: "10px 15px",
             fontSize: "16px",
             color: "white",
             border: "none",
             borderRadius: "5px",
-            cursor: isLogin ? "pointer" : "not-allowed",
-            
+            cursor: "pointer",
+
           }}
           className="bg-[#fe6d2e] hover:bg-orange-400"
         >

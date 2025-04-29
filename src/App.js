@@ -25,8 +25,9 @@ function App() {
       console.log("jwt: ", auth?.jwt)
       dispatch(getUser(auth.jwt || jwt))
       dispatch(findCart(auth.jwt || jwt));
-      dispatch(getAllRestaurantsDistance({ jwt: auth.jwt || jwt, address: "Hoc vien cong nghe buu chinh vien thong" }));
+
     }
+    dispatch(getAllRestaurantsDistance({ address: "Hoc vien cong nghe buu chinh vien thong" }));
   }, [auth.jwt]);
 
   useEffect(() => {
