@@ -45,7 +45,7 @@ const MenuDetail = ({ food, onClose }) => {
   }
 
   const handleClickAddToCart = (e) => {
-    if (!auth?.login && !localStorage.getItem("jwt")) { // Kiểm tra nếu người dùng chưa đăng nhập
+    if (!auth?.login && !sessionStorage.getItem("jwt")) { // Kiểm tra nếu người dùng chưa đăng nhập
       setShowLoginModal(true); // Hiển thị modal yêu cầu đăng nhập
       return;
     }
@@ -68,7 +68,7 @@ const MenuDetail = ({ food, onClose }) => {
     e.preventDefault()
 
     const data = {
-      token: localStorage.getItem("jwt"),
+      token: sessionStorage.getItem("jwt"),
       cartItem: {
         foodId: food?.id,
         quantity: quantity,

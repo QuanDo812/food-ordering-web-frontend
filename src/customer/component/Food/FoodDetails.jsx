@@ -48,12 +48,13 @@ const FoodDetails = () => {
   };
 
   const handleClickAddToCart = (e) => {
-    if (!auth?.login && !localStorage.getItem("jwt")) { // Kiểm tra nếu người dùng chưa đăng nhập
+    if (!auth?.login && !sessionStorage.getItem("jwt")) { // Kiểm tra nếu người dùng chưa đăng nhập
       setShowLoginModal(true); // Hiển thị modal yêu cầu đăng nhập
       return;
     }
-    console.log("Cart Items:", cart?.cart?.cartItems[0]?.food?.restaurant?.id);
-    console.log("Current Restaurant ID:", menu?.menuItem?.restaurant?.id);
+    // console.log("Cart Items Length:", cart?.cart?.cartItems.length);
+    // console.log("Cart Restaurant ID:", cart?.cart?.cartItems[0]?.food?.restaurant?.id);
+    // console.log("Current Food Restaurant ID:", menu?.menuItem?.restaurant?.id);
     if (cart?.cart?.cartItems.length > 0 && cart?.cart?.cartItems[0]?.food?.restaurant?.id !== menu?.menuItem?.restaurant?.id) {
       setShowPopup(true);
       console.log("setPopUp: ", showPopup)
@@ -75,7 +76,7 @@ const FoodDetails = () => {
     e.preventDefault()
 
     const data = {
-      token: localStorage.getItem("jwt"),
+      token: auth?.jwt || sessionStorage.getItem("jwt"),
       cartItem: {
         foodId: menu?.menuItem?.id,
         quantity: quantity,
@@ -158,7 +159,7 @@ const FoodDetails = () => {
                   {menu?.menuItem?.name}
                 </Typography>
                 <Typography variant="h6" color="green" mt={1}>
-                  {menu?.menuItem?.price} VNĐ
+                  {menu?.menuItem?.price.toLocaleString()} VNĐ
                 </Typography>
                 <Rating value={menu?.menuItem?.rating != null ? (menu?.menuItem?.rating).toFixed(1) : 3.3} precision={0.5} readOnly sx={{ mt: 1 }} />
                 <Typography variant="h6" fontWeight="bold">
@@ -213,7 +214,7 @@ const FoodDetails = () => {
                   <Button variant="outlined" onClick={() => setQuantity((q) => q + 1)}>
                     +
                   </Button>
-                  <button onClick={() => handleClickAddToCart()} className="bg-[#fe6d2e] hover:bg-orange-400 text-white w-[300px] h-[40px] rounded-lg">
+                  <button onClick={(e) => handleClickAddToCart(e)} className="bg-[#fe6d2e] hover:bg-orange-400 text-white w-[300px] h-[40px] rounded-lg">
                     Thêm vào giỏ - {(cartPrice * quantity).toLocaleString()} VNĐ
                   </button>
                 </Box>
@@ -296,52 +297,53 @@ const FoodDetails = () => {
                 </div>
               </motion.div>
 
-              {showPopup && (
-                <>
-                  {/* Overlay mờ */}
-                  <div className="fixed inset-0 bg-black bg-opacity-20 z-[9999]" onClick={() => setShowPopup(false)}></div>
 
-                  {/* Popup */}
-                  <motion.div
-                    initial={{ x: "100%" }}
-                    animate={{ x: "0%" }}
-                    exit={{ x: "100%" }}
-                    transition={{ type: "tween", duration: 0.4 }}
-                    className="fixed top-0 right-0 h-full w-150 bg-white shadow-lg z-[10000] p-4"
-                  >
-                    <div className="bg-white w-96 h-full p-6 overflow-y-auto">
-                      {/* Nút đóng */}
-                      <button className="text-gray-500 text-lg top-3 left-3 absolute" onClick={() => setShowPopup(false)}>✖</button>
+            </>
+          )}
+          {showPopup && (
+            <>
+              {/* Overlay mờ */}
+              <div className="fixed inset-0 bg-black bg-opacity-20 z-[10001]" onClick={() => setShowPopup(false)}></div>
 
-                      {/* Icon giỏ hàng */}
-                      <div className="flex justify-center">
-                        <img src={"https://food.grab.com/static/images/ilus-confirm-new-basket.svg"} alt="Basket" className="w-80 h-80" />
-                      </div>
+              {/* Popup */}
+              <motion.div
+                initial={{ x: "100%" }}
+                animate={{ x: "0%" }}
+                exit={{ x: "100%" }}
+                transition={{ type: "tween", duration: 0.4 }}
+                className="fixed top-0 right-0 h-full w-150 bg-white shadow-lg z-[10002] p-4"
+              >
+                <div className="bg-white w-96 h-full p-6 overflow-y-auto">
+                  {/* Nút đóng */}
+                  <button className="text-gray-500 text-lg top-3 left-3 absolute" onClick={() => setShowPopup(false)}>✖</button>
 
-                      {/* Nội dung popup */}
-                      <h2 className="text-xl font-bold mt-3 text-center">Bắt đầu giỏ hàng mới?</h2>
-                      <p className="text-gray-500 text-center mt-2">
-                        Thêm món từ quán <strong>{menu?.menuItem?.restaurant?.name}</strong> sẽ xóa các món bạn đã thêm từ quán <strong>{cart?.cart?.cartItems[0]?.food?.restaurant?.name}</strong> mới giỏ hàng của bạn. Tiếp tục?
-                      </p>
+                  {/* Icon giỏ hàng */}
+                  <div className="flex justify-center">
+                    <img src={"https://food.grab.com/static/images/ilus-confirm-new-basket.svg"} alt="Basket" className="w-80 h-80" />
+                  </div>
 
-                      {/* Nút chọn hành động */}
-                      <div className="flex absolute bottom-10 w-full">
-                        <button variant="outlined" onClick={() => setShowPopup(false)} className="border hover:border-orange-500 hover:text-orange-500 py-2 rounded w-[170px]">
-                          Hủy
-                        </button>
-                        <button
-                          onClick={() => handleClickNext()}
-                          className="py-2 bg-orange-500 text-white rounded w-[170px] ml-2"
-                        >
-                          Tiếp tục
-                        </button>
-                      </div>
-                    </div>
+                  {/* Nội dung popup */}
+                  <h2 className="text-xl font-bold mt-3 text-center">Bắt đầu giỏ hàng mới?</h2>
+                  <p className="text-gray-500 text-center mt-2">
+                    Thêm món từ quán <strong>{menu?.menuItem?.restaurant?.name}</strong> sẽ xóa các món bạn đã thêm từ quán <strong>{cart?.cart?.cartItems[0]?.food?.restaurant?.name}</strong> mới giỏ hàng của bạn. Tiếp tục?
+                  </p>
+
+                  {/* Nút chọn hành động */}
+                  <div className="flex absolute bottom-10 w-full">
+                    <button variant="outlined" onClick={() => setShowPopup(false)} className="border hover:border-orange-500 hover:text-orange-500 py-2 rounded w-[170px]">
+                      Hủy
+                    </button>
+                    <button
+                      onClick={(e) => handleClickNext(e)}
+                      className="py-2 bg-orange-500 text-white rounded w-[170px] ml-2"
+                    >
+                      Tiếp tục
+                    </button>
+                  </div>
+                </div>
 
 
-                  </motion.div>
-                </>
-              )}
+              </motion.div>
             </>
           )}
 

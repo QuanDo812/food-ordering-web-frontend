@@ -9,30 +9,30 @@ import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 
 
 
-  const CustomPrevArrow = (props) => {
-    const { className, style, onClick } = props;
-    return (
-      <ArrowBackIos
-        className={className} 
-        onClick={onClick} 
-        style={{ ...style, color: "#fe6d2e", fontSize: "36px", left: "-50px" }} 
-      />
-    );
-  };
-  
-  const CustomNextArrow = (props) => {
-    const { className, style, onClick } = props;
-    return (
-      <ArrowForwardIos 
-        className={className} 
-        onClick={onClick} 
-        style={{ ...style, color: "#fe6d2e", fontSize: "36px", right: "-50px" }} 
-      />
-    );
-  };
+const CustomPrevArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <ArrowBackIos
+      className={className}
+      onClick={onClick}
+      style={{ ...style, color: "#fe6d2e", fontSize: "36px", left: "-50px" }}
+    />
+  );
+};
 
- 
-const MutilRestaurants = ({restaurants}) => {
+const CustomNextArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <ArrowForwardIos
+      className={className}
+      onClick={onClick}
+      style={{ ...style, color: "#fe6d2e", fontSize: "36px", right: "-50px" }}
+    />
+  );
+};
+
+
+const MutilRestaurants = ({ restaurants }) => {
   const settings = {
     dots: false,
     infinite: true,
@@ -41,7 +41,7 @@ const MutilRestaurants = ({restaurants}) => {
     slidesToScroll: 1,
     arrows: true,
     prevArrow: <CustomPrevArrow />, // Nút trái
-  nextArrow: <CustomNextArrow />, // Nút phải
+    nextArrow: <CustomNextArrow />, // Nút phải
     responsive: [
       {
         breakpoint: 1024,
@@ -66,31 +66,31 @@ const MutilRestaurants = ({restaurants}) => {
       </h2>
 
       {/* Slider chứa các card */}
-      <Box sx={{ width: "100%",  margin: "auto", mt: 3, overflow: "visible" }}>
+      <Box sx={{ width: "100%", margin: "auto", mt: 3, overflow: "visible" }}>
         <Slider {...settings} sx={{ padding: "0 9px" }}>
           {restaurants.map(item => (
-            <RestaurantCard restaurant={item} />
+            <RestaurantCard key={item?.id} restaurant={item} />
           ))}
         </Slider>
       </Box>
-     
+
 
       {/* Nút xem thêm */}
       <Box display="flex" justifyContent="center">
-      <Button 
-  variant="outlined" 
-  fullWidth
-  sx={{ 
-    mt: 3, 
-    color: "#fe6d2e", 
-    borderColor: "#fe6d2e",
-    "&:hover": { backgroundColor: "#fe6d2e", borderColor: "darkorange", color:"white"}
-  }}
->
-        See all promotions
-      </Button>
+        <Button
+          variant="outlined"
+          fullWidth
+          sx={{
+            mt: 3,
+            color: "#fe6d2e",
+            borderColor: "#fe6d2e",
+            "&:hover": { backgroundColor: "#fe6d2e", borderColor: "darkorange", color: "white" }
+          }}
+        >
+          See all promotions
+        </Button>
       </Box>
-      
+
     </Box>
   )
 }

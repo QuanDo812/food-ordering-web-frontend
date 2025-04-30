@@ -68,6 +68,8 @@ const Navbar = () => {
                   <ul className="py-1">
                     <li className="px-4 py-2 hover:text-orange-500  cursor-pointer" onClick={() => navigate('/my-profile')}>Tài Khoản Của Tôi</li>
                     <li className="px-4 py-2 hover:text-orange-500  cursor-pointer" onClick={() => navigate('/my-profile/orders')}>Đơn Mua</li>
+                    {auth?.user?.role == "ROLE_RESTAURANT_OWNER" && <li className="px-4 py-2 hover:text-orange-500  cursor-pointer" onClick={() => navigate('/admin/restaurant/')}>Quản lí quán ăn</li>}
+                    {auth?.user?.role == "ROLE_SHIPPER" && <li className="px-4 py-2 hover:text-orange-500  cursor-pointer" onClick={() => navigate('/shipper/')}>Giao hàng</li>}
                     <li className="px-4 py-2 hover:text-red-500  cursor-pointer " onClick={handleLogout}>Đăng Xuất</li>
                   </ul>
                 </div>

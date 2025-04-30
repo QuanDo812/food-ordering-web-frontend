@@ -25,7 +25,7 @@ const Admin = () => {
   const handleOpenSideBar = () => setOpenSideBar(true);
   const handleCloseSideBar = () => setOpenSideBar(false);
   const { auth, restaurant, ingredients } = useSelector((store) => store);
-  const jwt = localStorage.getItem("jwt");
+  const jwt = sessionStorage.getItem("jwt");
   useEffect(() => {
     if (restaurant.usersRestaurant) {
       dispatch(
@@ -46,7 +46,7 @@ const Admin = () => {
           restaurantId: restaurant.usersRestaurant?.id,
           jwt: auth.jwt || jwt,
         })
-        
+
       );
       console.log("sdhfoidshfo")
     }

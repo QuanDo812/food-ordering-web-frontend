@@ -78,7 +78,7 @@ const LoginForm = () => {
               fullWidth
               variant="contained"
               color="primary"
-              sx={{ mt: 2,padding:"1rem" }}
+              sx={{ mt: 2, padding: "1rem" }}
             >
               Login
             </Button>

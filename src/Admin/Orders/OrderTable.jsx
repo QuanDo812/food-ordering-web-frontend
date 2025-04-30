@@ -46,7 +46,7 @@ const OrdersTable = ({ name }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ status: "", sort: "" });
   const dispatch = useDispatch();
-  const jwt = localStorage.getItem("jwt");
+  const jwt = sessionStorage.getItem("jwt");
   const { auth, restaurant, restaurantsOrder } = useSelector((store) => store);
   const [anchorElArray, setAnchorElArray] = useState([]);
   const { id } = useParams();

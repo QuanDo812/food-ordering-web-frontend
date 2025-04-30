@@ -5,7 +5,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
 import CartItemCard from "./CartItemCard";
 import { useDispatch, useSelector } from "react-redux";
-import { findCart } from "../../../state/Customer/Cart/Action";
+import { clearCartAction, findCart } from "../../../state/Customer/Cart/Action";
 import { createOrder } from "../../../state/Customer/Order/Action";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
@@ -33,7 +33,7 @@ const CartTest = () => {
 
 
   useEffect(() => {
-    dispatch(findCart(auth?.jwt || localStorage.getItem("jwt")));
+    dispatch(findCart(auth?.jwt || sessionStorage.getItem("jwt")));
   }, [cart.cartItems]);
 
 
@@ -61,7 +61,7 @@ const CartTest = () => {
       const districtName = districts.find(d => d.code == selectedDistrict)?.name || "";
       const wardName = wards.find(w => w.code == selectedWard)?.name || "";
       const data = {
-        jwt: localStorage.getItem("jwt"),
+        jwt: sessionStorage.getItem("jwt"),
         order: {
           restaurantId: cart?.cart?.cartItems[0].food?.restaurant?.id,
           deliveryAddress: {
@@ -78,12 +78,13 @@ const CartTest = () => {
         },
       };
 
-      console.log("data", data)
+      console.log("data order", data)
 
 
       dispatch(createOrder(data));
       if (data.order.isPayment == false) {
         navigate(`/payment-result/${true}`)
+        dispatch(clearCartAction());
       }
     }
   };

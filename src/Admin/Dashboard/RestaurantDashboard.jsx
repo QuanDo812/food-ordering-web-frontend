@@ -24,7 +24,7 @@ const RestaurantDashboard = () => {
     dispatch(
       fetchRestaurantsOrder({
         restaurantId: restaurant?.usersRestaurant?.id,
-        jwt: auth.jwt || localStorage.getItem("jwt"),
+        jwt: auth.jwt || sessionStorage.getItem("jwt"),
       })
     );
   }, [auth.jwt]);
@@ -113,7 +113,7 @@ const RestaurantDashboard = () => {
   return (
     <div className="p-6 space-y-6">
       {/* Ảnh nhà hàng */}
-      
+
 
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -149,8 +149,8 @@ const RestaurantDashboard = () => {
                   val === "daily"
                     ? generateRecentDates()
                     : val === "monthly"
-                    ? generateRecentMonths()
-                    : generateRecentYears();
+                      ? generateRecentMonths()
+                      : generateRecentYears();
                 setSelectedValue(newOptions.slice(-1)[0]);
               }}
               indicatorColor="primary"
@@ -180,25 +180,25 @@ const RestaurantDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-  {/* Ảnh đầu tiên chiếm toàn bộ chiều ngang */}
-  <img
-    className="w-full h-[40vh] object-cover col-span-1 lg:col-span-2"
-    src={restaurant?.usersRestaurant?.images[0]}
-    alt="Ảnh 1"
-  />
+        {/* Ảnh đầu tiên chiếm toàn bộ chiều ngang */}
+        <img
+          className="w-full h-[40vh] object-cover col-span-1 lg:col-span-2"
+          src={restaurant?.usersRestaurant?.images[0]}
+          alt="Ảnh 1"
+        />
 
-  {/* Hai ảnh bên dưới chia 2 cột */}
-  <img
-    className="w-full h-[40vh] object-cover"
-    src={restaurant?.usersRestaurant?.images[1]}
-    alt="Ảnh 2"
-  />
-  <img
-    className="w-full h-[40vh] object-cover"
-    src={restaurant?.usersRestaurant?.images[2]}
-    alt="Ảnh 3"
-  />
-</div>
+        {/* Hai ảnh bên dưới chia 2 cột */}
+        <img
+          className="w-full h-[40vh] object-cover"
+          src={restaurant?.usersRestaurant?.images[1]}
+          alt="Ảnh 2"
+        />
+        <img
+          className="w-full h-[40vh] object-cover"
+          src={restaurant?.usersRestaurant?.images[2]}
+          alt="Ảnh 3"
+        />
+      </div>
     </div>
   );
 };

@@ -18,7 +18,7 @@ function App() {
   const { auth } = useSelector(store => store);
   const navigate = useNavigate();
 
-  const jwt = localStorage.getItem("jwt")
+  const jwt = sessionStorage.getItem("jwt")
 
   useEffect(() => {
     if (auth.jwt != null || jwt != null) {
@@ -28,7 +28,7 @@ function App() {
 
     }
     dispatch(getAllRestaurantsDistance({ address: "Hoc vien cong nghe buu chinh vien thong" }));
-  }, [auth.jwt]);
+  }, []);
 
   useEffect(() => {
     if (auth.user?.role == "ROLE_RESTAURANT_OWNER") {

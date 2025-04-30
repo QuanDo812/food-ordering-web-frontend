@@ -26,7 +26,7 @@ const RestaurantsOrder = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
-  const jwt = localStorage.getItem("jwt");
+  const jwt = sessionStorage.getItem("jwt");
   const { restaurant, restaurantsOrder, auth } = useSelector((store) => store);
 
   const decodedQueryString = decodeURIComponent(location.search);
@@ -55,7 +55,7 @@ const RestaurantsOrder = () => {
 
     console.log("restaurants orders store ", restaurantsOrder)
   };
-  
+
   return (
     <div className="px-2">
       <Card className="p-5">

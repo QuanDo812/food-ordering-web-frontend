@@ -68,7 +68,7 @@ const authReducer = (state = initialState, action) => {
         user: action.payload,
         favorites: action.payload.favorites,
       };
-      
+
 
     case UPDATE_USER_FAILURE:
     case REGISTER_FAILURE:
@@ -77,7 +77,7 @@ const authReducer = (state = initialState, action) => {
       return { ...state, isLoading: false, error: action.payload };
 
     case LOGOUT:
-      localStorage.removeItem("jwt");
+      sessionStorage.removeItem("jwt");
       return { ...state, jwt: null, user: null, success: "logout success" };
     default:
       return state;

@@ -10,20 +10,20 @@ import { removeCartItem, updateCartItem } from "../../../state/Customer/Cart/Act
 const CartItemCard = ({ item }) => {
 
   const dispatch = useDispatch();
-  const jwt=localStorage.getItem("jwt");
-  const {auth}=useSelector(store=>store)
+  const jwt = sessionStorage.getItem("jwt");
+  const { auth } = useSelector(store => store)
   const handleUpdateCartItem = (value) => {
-    if(value===-1 && item.quantity==1){
+    if (value === -1 && item.quantity == 1) {
       handleRemoveCartItem()
     }
-    const data={ cartItemId: item.id, quantity: item.quantity + value}
+    const data = { cartItemId: item.id, quantity: item.quantity + value }
     dispatch(
-      updateCartItem({data,jwt:auth.jwt || jwt})
+      updateCartItem({ data, jwt: auth.jwt || jwt })
     );
   };
-  const handleRemoveCartItem=()=>{
-    dispatch(removeCartItem({cartItemId:item.id,jwt:auth.jwt || jwt}))
-    
+  const handleRemoveCartItem = () => {
+    dispatch(removeCartItem({ cartItemId: item.id, jwt: auth.jwt || jwt }))
+
   }
   return (
     <div className="px-5">
@@ -45,7 +45,7 @@ const CartItemCard = ({ item }) => {
                   <IconButton
 
                     onClick={() => handleUpdateCartItem(-1)}
-                    sx ={{color: "#FF5722"}}
+                    sx={{ color: "#FF5722" }}
                   >
                     <RemoveCircleOutlineIcon />
                   </IconButton>
@@ -55,7 +55,7 @@ const CartItemCard = ({ item }) => {
 
                   <IconButton
                     onClick={() => handleUpdateCartItem(1)}
-                    sx ={{color: "#FF5722"}}
+                    sx={{ color: "#FF5722" }}
                   >
                     <AddCircleOutlineIcon />
                   </IconButton>
@@ -64,19 +64,19 @@ const CartItemCard = ({ item }) => {
             }
           </div>
           <p className="flex items-center">
-  {item?.totalPrice.toLocaleString()} <span className="ml-1">VNĐ</span>
-</p>
+            {item?.totalPrice.toLocaleString()} <span className="ml-1">VNĐ</span>
+          </p>
 
-          
+
         </div>
-        
+
 
       </div>
       <div className="pt-3 space-x-2">
-        {item?.ingredients.map((item)=><Chip label={item}/> )}
+        {item?.ingredients.map((item) => <Chip label={item} />)}
       </div>
-      
-  </div>
+
+    </div>
   );
 };
 
