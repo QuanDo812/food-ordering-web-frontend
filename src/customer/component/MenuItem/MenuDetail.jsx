@@ -7,7 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addItemToCart, clearCartAction } from "../../../state/Customer/Cart/Action";
 import { categorizedIngredients } from "../../../util/categorizedIngredients"
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -77,7 +78,24 @@ const MenuDetail = ({ food, onClose }) => {
       },
     };
     dispatch(addItemToCart(data));
-    onClose();
+
+    toast.success('Đã thêm món ăn vào giỏ hàng!', {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      onClose: () => {
+        // Only close the component after toast is done
+        onClose();
+      },
+
+
+    });
+    // onClose();
   };
 
 
@@ -85,6 +103,19 @@ const MenuDetail = ({ food, onClose }) => {
 
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        style={{ zIndex: 100000 }}
+      />
       <div className="fixed inset-0 bg-black bg-opacity-20 z-[9998]" onClick={onClose}></div>
       <motion.div
         initial={{ x: "100%" }} // Bắt đầu từ ngoài màn hình bên phải
@@ -124,7 +155,10 @@ const MenuDetail = ({ food, onClose }) => {
                         onChange={() => handleCheckboxChange(ingredient?.name, ingredient?.price)}
                         disabled={!ingredient?.inStoke}
                       />
-                      {ingredient?.name} <span className="text-gray-500">{ingredient?.price.toLocaleString() + " VNĐ"}</span>
+                      {ingredient?.name}{" "}
+                      <span className="text-gray-500">
+                        {ingredient?.price ? ingredient.price.toLocaleString() + " VNĐ" : "0 VNĐ"}
+                      </span>
                     </label>
                   ))}
                 </div>

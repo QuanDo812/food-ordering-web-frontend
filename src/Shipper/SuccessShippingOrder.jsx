@@ -19,6 +19,7 @@ import {
     TableRow,
     TextField,
     Typography,
+    TablePagination
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { getAddress } from "../util/address";
@@ -27,7 +28,7 @@ import { Image } from "@mui/icons-material";
 const SuccessShippingOrder = () => {
     const { auth, shipperOrder } = useSelector((store) => store);
     const dispatch = useDispatch();
-    const jwt = auth?.jwt || localStorage.getItem("jwt");
+    const jwt = auth?.jwt || sessionStorage.getItem("jwt");
 
     useEffect(() => {
         dispatch(getHistoryShipperOrder(jwt));
@@ -36,6 +37,23 @@ const SuccessShippingOrder = () => {
     const orders = shipperOrder?.historyOrders
         ?.filter((order) => order?.orderStatus === "COMPLETED")
         ?.sort((a, b) => new Date(b?.deliveredAt) - new Date(a?.deliveredAt)) || [];
+
+    // Add pagination states
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+
+    // Add pagination handlers
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    // Calculate total orders
+    const totalOrders = orders.length;
 
     return (
         <div>
@@ -69,7 +87,7 @@ const SuccessShippingOrder = () => {
                             <TableBody>
                                 {orders.map((item) => (
                                     <>
-                                        {item?.orderItems.map((orderItem, orderIndex) => (
+                                        {item?.orderItems.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((orderItem, orderIndex) => (
                                             <TableRow
                                                 key={`${item?.id}-${orderIndex}`}
                                                 className="cursor-pointer"
@@ -142,6 +160,34 @@ const SuccessShippingOrder = () => {
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    {/* Add TablePagination */}
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={totalOrders}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                        sx={{
+                            '.MuiTablePagination-select': {
+                                color: '#ea580c',
+                            },
+                            '.MuiTablePagination-selectIcon': {
+                                color: '#ea580c',
+                            },
+                            '.MuiTablePagination-displayedRows': {
+                                color: '#475569',
+                            },
+                            '.MuiTablePagination-actions': {
+                                color: '#ea580c',
+                            },
+                        }}
+                        labelRowsPerPage="Số hàng mỗi trang:"
+                        labelDisplayedRows={({ from, to, count }) =>
+                            `${from}-${to} trong ${count !== -1 ? count : `hơn ${to}`}`
+                        }
+                    />
                 </Card>
 
 

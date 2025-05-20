@@ -17,6 +17,7 @@ import {
   TableHead,
   TableRow,
   Typography,
+  TablePagination
 } from "@mui/material";
 
 import React, { useEffect, useState } from "react";
@@ -27,19 +28,17 @@ import {
   fetchRestaurantsOrder,
   updateOrderStatus,
 } from "../../state/Admin/Order/restaurants.order.action";
-// import {
-//   confirmOrder,
-//   deleteOrder,
-//   deliveredOrder,
-//   getOrders,
-//   shipOrder,
-// } from "../../state/Admin/Order/Action";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const orderStatus = [
-  { label: "Pending", value: "PENDING" },
-  { label: "Completed", value: "COMPLETED" },
-  { label: "Out For Delivery", value: "OUT_FOR_DELIVERY" },
-  { label: "Delivering", value: "DELIVERING" },
+  { label: "Đang chờ gia hàng", value: "PENDING" },
+  { label: "Hoàn thành", value: "COMPLETED" },
+  { label: "Giao hàng thất bại", value: "OUT_FOR_DELIVERY" },
+  { label: "Đang giao hàng", value: "DELIVERING" },
+  { label: "Đã hủy", value: "DELETED" },
+  { label: "Chờ xác nhận", value: "CONFIRMING" },
 ];
 
 const OrdersTable = ({ name }) => {
@@ -67,51 +66,89 @@ const OrdersTable = ({ name }) => {
   const handleUpdateOrder = (orderId, orderStatus, index) => {
     handleUpdateStatusMenuClose(index);
     dispatch(updateOrderStatus({ orderId, orderStatus, jwt }));
+    toast.success('Cập nhật trạng thái thành công!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true
+    });
   };
 
-  console.log("restaurants orders store ", restaurantsOrder)
+
+  // Add pagination states
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  // Handle page change
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Handle rows per page change
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  // Calculate pagination
+  const emptyRows = page > 0
+    ? Math.max(0, (1 + page) * rowsPerPage - (restaurantsOrder?.orders?.length || 0))
+    : 0;
 
   return (
     <Box>
-      <Card className="mt-1">
+      <ToastContainer />
+      <Card
+        className="shadow-lg"
+        sx={{
+          borderRadius: '16px',
+          background: 'rgba(255, 255, 255, 0.9)',
+          backdropFilter: 'blur(10px)'
+        }}
+      >
         <CardHeader
-          title={name}
+          title={
+            <Typography variant="h6" sx={{ color: '#ea580c', fontWeight: '600' }}>
+              {name}
+            </Typography>
+          }
           sx={{
-            pt: 2,
-            alignItems: "center",
-            "& .MuiCardHeader-action": { mt: 0.6 },
+            p: 3,
+            borderBottom: '1px solid #f1f5f9'
           }}
         />
-        <TableContainer>
-          <Table sx={{}} aria-label="table in dashboard">
+
+        <TableContainer sx={{ p: 2 }}>
+          <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Id</TableCell>
-                <TableCell>Hình ảnh</TableCell>
-                {/* {!isDashboard && <TableCell>Title</TableCell>} */}
-                <TableCell>Khách hàng</TableCell>
-                <TableCell>Giá</TableCell>
-
-                <TableCell>Tên</TableCell>
-                <TableCell>Thành phần</TableCell>
-                <TableCell>Thời gian đặt</TableCell>
-                <TableCell>Trạng thái</TableCell>
-                <TableCell sx={{ textAlign: "center" }}>Cập nhật</TableCell>
-                {/* {!isDashboard && (
-                  <TableCell sx={{ textAlign: "center" }}>Delete</TableCell>
-                )} */}
+                <TableCell sx={{ fontWeight: 'bold', color: '#475569' }}>Id</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', color: '#475569' }}>Hình ảnh</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', color: '#475569' }}>Khách hàng</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', color: '#475569' }}>Giá</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', color: '#475569' }}>Tên</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', color: '#475569' }}>Thành phần</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', color: '#475569' }}>Thời gian đặt</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', color: '#475569' }}>Trạng thái</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', color: '#475569', textAlign: 'center' }}>
+                  Cập nhật
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {(restaurantsOrder?.orders || [])
-                ?.slice(0, restaurantsOrder?.orders.length)
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((item, index) => (
                   <TableRow
-                    className="cursor-pointer"
-                    hover
                     key={item?.id}
+                    hover
                     sx={{
-                      "&:last-of-type td, &:last-of-type th": { border: 0 },
+                      '&:hover': {
+                        backgroundColor: '#fff7ed',
+                      },
+                      '&:last-child td': { border: 0 }
                     }}
                   >
                     <TableCell>{item?.id}</TableCell>
@@ -164,49 +201,78 @@ const OrdersTable = ({ name }) => {
                               : item?.orderStatus === "COMPLETED"
                                 ? "rgb(76, 175, 80)"        // Xanh lá
                                 : item?.orderStatus === "DELIVERING"
-                                  ? "rgb(33, 150, 243)"       // Xanh dương
-                                  : "rgb(244, 67, 54)"        // Đỏ (default)
+                                  ? "rgb(33, 150, 243)"
+                                  : item?.orderStatus === "CONFIRMING"
+                                    ? "rgb(255, 193, 7)"        // Vàng
+                                    : "rgb(244, 67, 54)"        // Đỏ (default)
                         }}
                       />
 
                     </TableCell>
 
-                    <TableCell
-                      sx={{ textAlign: "center" }}
-                      className="text-white"
-                    >
-                      <div>
-                        <Button
-                          id={`basic-button-${item?.id}`}
-                          aria-controls={`basic-menu-${item?.id}`}
-                          aria-haspopup="true"
-                          aria-expanded={Boolean(anchorElArray[index])}
-                          onClick={(event) =>
-                            handleUpdateStatusMenuClick(event, index)
+                    <TableCell>
+                      <Button
+                        variant="outlined"
+                        onClick={(event) => {
+                          handleUpdateStatusMenuClick(event, index);
+                        }
+                        }
+                        sx={{
+                          color: '#ea580c',
+                          borderColor: '#ea580c',
+                          '&:hover': {
+                            borderColor: '#ea580c',
+                            backgroundColor: '#fff7ed',
                           }
-                        >
-                          Trạng thái
-                        </Button>
-                        <Menu
-                          id={`basic-menu-${item?.id}`}
-                          anchorEl={anchorElArray[index]}
-                          open={Boolean(anchorElArray[index])}
-                          onClose={() => handleUpdateStatusMenuClose(index)}
-                          MenuListProps={{
-                            "aria-labelledby": `basic-button-${item?.id}`,
-                          }}
-                        >
-                          {orderStatus.map((s) => (
-                            <MenuItem
-                              onClick={() =>
-                                handleUpdateOrder(item?.id, s.value, index)
+                        }}
+                      >
+                        Trạng thái
+                      </Button>
+                      <Menu
+                        anchorEl={anchorElArray[index]}
+                        open={Boolean(anchorElArray[index])}
+                        onClose={() => handleUpdateStatusMenuClose(index)}
+                        PaperProps={{
+                          sx: {
+                            mt: 1,
+                            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                            '& .MuiMenuItem-root': {
+                              px: 2,
+                              py: 1,
+                              '&:hover': {
+                                backgroundColor: '#fff7ed',
                               }
+                            }
+                          }
+                        }}
+                      >
+                        {item?.orderStatus !== "CONFIRMING" ? orderStatus.map((s) => (
+                          <MenuItem
+                            key={s.value}
+                            onClick={() => handleUpdateOrder(item?.id, s.value, index)}
+                          >
+                            {s.label}
+                          </MenuItem>
+                        ))
+                          :
+                          <>
+                            <MenuItem
+                              key={"CONFIRM"}
+                              onClick={() => handleUpdateOrder(item?.id, "PENDING", index)}
                             >
-                              {s.label}
+                              {"Xác nhận"}
                             </MenuItem>
-                          ))}
-                        </Menu>
-                      </div>
+                            <MenuItem
+                              key={"DELETED"}
+                              onClick={() => handleUpdateOrder(item?.id, "DELETED", index)}
+                            >
+                              {"Hủy bỏ"}
+                            </MenuItem>
+                          </>
+                        }
+                      </Menu>
+
+
                     </TableCell>
 
 
@@ -215,6 +281,34 @@ const OrdersTable = ({ name }) => {
             </TableBody>
           </Table>
         </TableContainer>
+        {/* Add TablePagination */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={restaurantsOrder?.orders?.length || 0}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          sx={{
+            '.MuiTablePagination-select': {
+              color: '#ea580c',
+            },
+            '.MuiTablePagination-selectIcon': {
+              color: '#ea580c',
+            },
+            '.MuiTablePagination-displayedRows': {
+              color: '#475569',
+            },
+            '.MuiTablePagination-actions': {
+              color: '#ea580c',
+            },
+          }}
+          labelRowsPerPage="Số hàng mỗi trang:"
+          labelDisplayedRows={({ from, to, count }) =>
+            `${from}-${to} trong ${count !== -1 ? count : `hơn ${to}`}`
+          }
+        />
       </Card>
 
 

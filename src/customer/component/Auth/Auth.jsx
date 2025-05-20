@@ -1,46 +1,41 @@
-import { Alert, Box, Button, Modal, Snackbar, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React from "react";
+import { Box, Container, Paper } from "@mui/material";
+import { useLocation } from "react-router-dom";
 import RegisterForm from "./RegisterForm";
 import LoginForm from "./LoginForm";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  outline: "none",
-  p: 4,
-};
-
 const Auth = () => {
   const location = useLocation();
-  const navigate = useNavigate();
-  
 
   return (
-    <>
-      <Modal
-        open={
-          location.pathname === "/account/register" ||
-          location.pathname === "/account/login"
-         
-        }
-        onClose={() => navigate("/")}
-      >
-        <Box sx={style}>
-          {location.pathname === "/account/register" ? (
+    <Box
+      sx={{
+        minHeight: "100vh",
+        width: "100%",
+        backgroundColor: "#f5f5f5",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        py: 5
+      }}
+    >
+      <Container maxWidth="lg">
+        <Paper
+          elevation={3}
+          sx={{
+            overflow: "hidden",
+            borderRadius: "16px",
+          }}
+        >
+          {location.pathname === "/account/login" ? (
+            <LoginForm />
+          ) : (
+
             <RegisterForm />
-          ) :  
-            <LoginForm/>
-          }
-          
-        </Box>
-      </Modal>
-    </>
+          )}
+        </Paper>
+      </Container>
+    </Box>
   );
 };
 

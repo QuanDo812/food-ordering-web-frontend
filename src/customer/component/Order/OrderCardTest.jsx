@@ -3,6 +3,10 @@ import { FaTruck, FaCheckCircle, FaTimesCircle, FaStar } from "react-icons/fa";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Rating } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { createReviewFood } from "../../../state/Customer/Menu/Action";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { updateOrderStatus } from "../../../state/Admin/Order/restaurants.order.action";
+import { updateOrderStatusCustomer } from "../../../state/Customer/Order/Action";
 
 const OrderCardTest = ({ order, orders }) => {
   const [open, setOpen] = useState(false);
@@ -12,7 +16,7 @@ const OrderCardTest = ({ order, orders }) => {
   const dispatch = useDispatch();
 
   const { auth, menu } = useSelector((store) => store)
-  const jwt = localStorage.getItem("jwt")
+  const jwt = sessionStorage.getItem("jwt")
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -32,11 +36,18 @@ const OrderCardTest = ({ order, orders }) => {
     handleClose(); // Đóng modal sau khi gửi đánh giá
   };
 
+  const handleUpdateOrder = (orderId, orderStatus) => {
+    dispatch(updateOrderStatusCustomer({ orderId, orderStatus, jwt }));
+
+  };
+
+
   const statusIcons = {
     "PENDING": <FaTruck className="text-blue-500" />,
     "PAID": <FaCheckCircle className="text-green-500" />,
     "DELETED": <FaTimesCircle className="text-red-500" />,
     "DELIVERED": <FaCheckCircle className="text-yellow-500" />,
+    "CONFIRMING": <FaCheckCircle className="text-yellow-500" />,
   };
 
   return (
@@ -58,7 +69,7 @@ const OrderCardTest = ({ order, orders }) => {
 
       {/* Tổng tiền */}
       <div className="text-center">
-        <p className="text-xl font-bold text-red-500">{order.totalPrice}₫</p>
+        <p className="text-xl font-bold text-red-500">{order?.totalPrice != null ? order?.totalPrice.toLocaleString() : null}₫</p>
       </div>
 
       {/* Trạng thái đơn hàng */}
@@ -71,7 +82,9 @@ const OrderCardTest = ({ order, orders }) => {
               ? "bg-green-100 text-green-600"
               : orders?.orderStatus === "DELIVERING"
                 ? "bg-yellow-100 text-yellow-600"
-                : "bg-red-100 text-red-600"
+                : orders?.orderStatus === "DELETED"
+                  ? "bg-red-100 text-red-600"
+                  : "bg-gray-100 text-gray-600"
             }`}
         >
           {orders?.orderStatus}
@@ -85,6 +98,15 @@ const OrderCardTest = ({ order, orders }) => {
           className="mt-3 px-4 py-2 bg-yellow-500 text-white font-bold rounded-lg hover:bg-yellow-600 transition"
         >
           Đánh giá
+        </button>
+      )}
+
+      {orders?.orderStatus === "CONFIRMING" && (
+        <button
+          onClick={() => handleUpdateOrder(orders?.id, "DELETED")}
+          className="mt-3 px-4 py-2 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition"
+        >
+          Hủy đơn hàng
         </button>
       )}
 

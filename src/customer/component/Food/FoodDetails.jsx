@@ -8,12 +8,20 @@ import React, { useEffect, useState } from "react";
 import { Box, Typography, Button, Rating } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { getMenuItemsByFoodId } from "../../../state/Customer/Menu/Action";
+import { getMenuItemsByFoodId, getMenuItemsByRestaurantId } from "../../../state/Customer/Menu/Action";
 import { ClipLoader } from "react-spinners";
 import { categorizedIngredients } from "../../../util/categorizedIngredients";
 import { addItemToCart, clearCartAction } from "../../../state/Customer/Cart/Action";
 import { color, motion, transform } from "framer-motion";
-import { Fullscreen } from "@mui/icons-material";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { FaStar } from 'react-icons/fa';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 
@@ -52,9 +60,7 @@ const FoodDetails = () => {
       setShowLoginModal(true); // Hiển thị modal yêu cầu đăng nhập
       return;
     }
-    // console.log("Cart Items Length:", cart?.cart?.cartItems.length);
-    // console.log("Cart Restaurant ID:", cart?.cart?.cartItems[0]?.food?.restaurant?.id);
-    // console.log("Current Food Restaurant ID:", menu?.menuItem?.restaurant?.id);
+
     if (cart?.cart?.cartItems.length > 0 && cart?.cart?.cartItems[0]?.food?.restaurant?.id !== menu?.menuItem?.restaurant?.id) {
       setShowPopup(true);
       console.log("setPopUp: ", showPopup)
@@ -85,10 +91,27 @@ const FoodDetails = () => {
       },
     };
     dispatch(addItemToCart(data));
+    toast.success('Đã thêm món ăn vào giỏ hàng!', {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+
+
+    });
   };
 
   useEffect(() => {
     dispatch(getMenuItemsByFoodId({ foodId }))
+    dispatch(
+      getMenuItemsByRestaurantId({
+        restaurantId: menu?.menuItem?.restaurant?.id
+      })
+    );
   }, [foodId])
 
   useEffect(() => {
@@ -110,143 +133,236 @@ const FoodDetails = () => {
           <ClipLoader color="#FF5722" size={60} />
         </div>
       ) : (
-        <>
-          <Box display="flex" flexDirection="column" gap={10} p={10} width="100%" mt="30px">
-            {/* Khu vực hình ảnh + thông tin */}
-            <Box display="flex" gap={20}>
-              {/* Hình ảnh bên trái */}
-              <Box>
-                <Box
-                  component="img"
-                  src={selectedImage}
-                  alt="food"
-                  sx={{
-                    width: 400,
-                    height: 300,
-                    objectFit: "cover",
-                    borderRadius: 2,
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-                  }}
-                />
 
-                {/* Thumbnail nhỏ bên dưới */}
-                <Box display="flex" gap={1} mt={2} justifyContent="center">
-                  {menu?.menuItem?.images.map((img, index) => (
-                    <Box
-                      key={index}
-                      component="img"
-                      src={img}
-                      alt="thumbnail"
-                      sx={{
-                        width: 70,
-                        height: 50,
-                        objectFit: "cover",
-                        borderRadius: 1,
-                        cursor: "pointer",
-                        border: selectedImage === img ? "3px solid green" : "2px solid transparent",
-                        transition: "all 0.3s",
-                        "&:hover": { opacity: 0.7 },
-                      }}
-                      onClick={() => setSelectedImage(img)}
+        <div className="min-h-screen bg-gradient-to-br from-orange-50 to-white">
+          <ToastContainer
+            position="top-right"
+            autoClose={2000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+            style={{ zIndex: 100000 }}
+          />
+          <div className="max-w-7xl mx-auto px-6 py-8">
+            {/* Main Content */}
+            <div className="bg-white rounded-2xl shadow-sm border border-orange-100 p-8 mb-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                {/* Left Column - Images */}
+                <div>
+                  <div className="relative rounded-xl overflow-hidden">
+                    <img
+                      src={selectedImage}
+                      alt={menu?.menuItem?.name}
+                      className="w-full h-[400px] object-cover"
                     />
-                  ))}
-                </Box>
-              </Box>
+                    <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full">
+                      <Rating
+                        value={menu?.menuItem?.rating || 3.3}
+                        precision={0.5}
+                        readOnly
+                        size="small"
+                      />
+                    </div>
+                  </div>
 
-              {/* Thông tin bên phải */}
-              <Box flex={1}>
-                <Typography variant="h4" fontWeight="bold">
-                  {menu?.menuItem?.name}
-                </Typography>
-                <Typography variant="h6" color="green" mt={1}>
-                  {menu?.menuItem?.price.toLocaleString()} VNĐ
-                </Typography>
-                <Rating value={menu?.menuItem?.rating != null ? (menu?.menuItem?.rating).toFixed(1) : 3.3} precision={0.5} readOnly sx={{ mt: 1 }} />
-                <Typography variant="h6" fontWeight="bold">
-                  Mô tả
-                </Typography>
-                <Typography>
-                  {menu?.menuItem?.description}
-                </Typography>
+                  {/* Thumbnails */}
+                  <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
+                    {menu?.menuItem?.images.map((img, index) => (
+                      <img
+                        key={index}
+                        src={img}
+                        alt="thumbnail"
+                        className={`w-20 h-20 rounded-lg cursor-pointer object-cover transition-all
+                          ${selectedImage === img ? 'ring-2 ring-orange-500' : 'opacity-70 hover:opacity-100'}`}
+                        onClick={() => setSelectedImage(img)}
+                      />
+                    ))}
+                  </div>
+                </div>
 
-                {/* Liệt kê các tùy chọn */}
-                <Box mt={4}>
+                {/* Right Column - Details */}
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-800 mb-4">
+                    {menu?.menuItem?.name}
+                  </h1>
 
-                  {/* Chọn topping */}
+                  <div className="flex items-center gap-4 mb-6">
+                    <span className="text-2xl font-bold text-orange-600">
+                      {menu?.menuItem?.price.toLocaleString()} VNĐ
+                    </span>
+                    <div className="bg-orange-100 px-3 py-1 rounded-full">
+                      <Typography variant="body2" color="orange.800">
+                        ⭐ {menu?.menuItem?.rating?.toFixed(1)} ({menu?.menuItem?.reviews.length} đánh giá)
+                      </Typography>
+                    </div>
+                  </div>
+
+                  <div className="prose max-w-none mb-8">
+                    <h3 className="text-lg font-semibold text-gray-700">Mô tả</h3>
+                    <p className="text-gray-600">{menu?.menuItem?.description}</p>
+                  </div>
+
+                  {/* Ingredients Selection */}
                   {menu?.menuItem?.ingredientsItems && (
-                    <div className="mt-4 flex">
-                      {Object.keys(
-                        categorizedIngredients(menu?.menuItem?.ingredientsItems)
-                      )?.map((category, index) => (
-                        <div key={index} className="flex flex-col gap-3 mb-6">
-                          <h3 className="text-lg font-semibold">{category}</h3>
-                          <div className="space-y-2">
-                            {categorizedIngredients(menu?.menuItem?.ingredientsItems)[
-                              category
-                            ].map((ingredient, idx) => (
-                              <label key={idx} className="flex items-center w-[200px] gap-3">
-                                <input
-                                  type="checkbox"
-                                  style={{
-                                    transform: "scale(1.5)",
-                                    accentColor: "#fe6d2e",
-                                  }}
-                                  checked={selectedIngredients.includes(ingredient?.name)}
-                                  onChange={() => handleCheckboxChange(ingredient?.name, ingredient?.price)}
-                                  disabled={!ingredient?.inStoke}
-                                />
-                                {ingredient?.name} <span className="text-gray-500">{ingredient?.price.toLocaleString() + " VNĐ"}</span>
-                              </label>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
+                    <div className="mb-8">
+                      <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                        Tùy chọn thêm
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {Object.entries(categorizedIngredients(menu?.menuItem?.ingredientsItems))
+                          .map(([category, items]) => (
+                            <div key={category} className="space-y-3">
+                              <h4 className="font-medium text-gray-700">{category}</h4>
+                              <div className="space-y-2">
+                                {items.map((ingredient, idx) => (
+                                  <label
+                                    key={idx}
+                                    className={`flex items-center justify-between p-3 rounded-lg border
+                                      ${selectedIngredients.includes(ingredient?.name)
+                                        ? 'border-orange-500 bg-orange-50'
+                                        : 'border-gray-200 hover:border-orange-200'
+                                      } ${!ingredient?.inStoke && 'opacity-50'}`}
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <input
+                                        type="checkbox"
+                                        className="w-4 h-4 accent-orange-500"
+                                        checked={selectedIngredients.includes(ingredient?.name)}
+                                        onChange={() => handleCheckboxChange(ingredient?.name, ingredient?.price)}
+                                        disabled={!ingredient?.inStoke}
+                                      />
+                                      <span className="text-gray-700">{ingredient?.name}</span>
+                                    </div>
+                                    <span className="text-orange-600 font-medium">
+                                      {ingredient?.price ? ingredient.price.toLocaleString() + " VNĐ" : "0 VNĐ"}
+                                    </span>
+                                  </label>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                      </div>
                     </div>
                   )}
-                </Box>
 
-                {/* Chọn số lượng & nút thêm vào giỏ hàng */}
-                <Box display="flex" alignItems="center" gap={2} mt={3}>
-                  <Button variant="outlined" onClick={() => setQuantity((q) => Math.max(1, q - 1))}>
-                    -
-                  </Button>
-                  <Typography>{quantity}</Typography>
-                  <Button variant="outlined" onClick={() => setQuantity((q) => q + 1)}>
-                    +
-                  </Button>
-                  <button onClick={(e) => handleClickAddToCart(e)} className="bg-[#fe6d2e] hover:bg-orange-400 text-white w-[300px] h-[40px] rounded-lg">
-                    Thêm vào giỏ - {(cartPrice * quantity).toLocaleString()} VNĐ
-                  </button>
-                </Box>
-              </Box>
-            </Box>
+                  {/* Quantity and Add to Cart */}
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center border border-gray-300 rounded-full">
+                      <button
+                        onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                        className="px-4 py-2 text-orange-500 hover:bg-orange-50 rounded-l-full"
+                      >
+                        -
+                      </button>
+                      <span className="px-4 font-medium">{quantity}</span>
+                      <button
+                        onClick={() => setQuantity(q => q + 1)}
+                        className="px-4 py-2 text-orange-500 hover:bg-orange-50 rounded-r-full"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <button
+                      onClick={handleClickAddToCart}
+                      className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-3 px-6 rounded-full font-medium transition-colors"
+                    >
+                      Thêm vào giỏ - {(cartPrice * quantity).toLocaleString()} VNĐ
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-            {/* Bình luận & Đánh giá */}
-            <Box>
-              <Typography variant="h5" fontWeight="bold" mb={2}>
-                📝 Đánh giá từ khách hàng
-              </Typography>
-              {menu?.menuItem?.reviews.length > 0 ?
-                menu?.menuItem?.reviews.map((review, index) => (
-                  <Box key={index} p={2} borderBottom="1px solid #ddd">
-                    <Box>
-                      <Typography fontWeight="bold">{review.nameCustomer}</Typography>
-                      <Typography color="textSecondary" variant="body2">
-                        {`Ngày: ${review?.reviewDate.substring(0, 10)} / ${review?.reviewDate.substring(11, 19)}`}
-                      </Typography>
-                    </Box>
-                    <Rating value={review.rating} readOnly size="small" />
-                    <Typography>{review.comment}</Typography>
-                  </Box>
-                ))
-                :
-                <Box>
-                  <Typography sx={{ ml: "30px", mt: "30px" }}>Chưa có bình luận nào</Typography>
-                </Box>
+            {/* Recommended Dishes */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">
+                Món ăn khác tại {menu?.menuItem?.restaurant?.name}
+              </h2>
 
-              }
-            </Box>
-          </Box>
+              <Swiper
+                modules={[Navigation, Pagination]}
+                spaceBetween={20}
+                slidesPerView={4}
+                navigation
+                pagination={{ clickable: true }}
+                className="pb-12"
+              >
+                {menu?.menuItems
+                  ?.filter(item => item.id !== menu?.menuItem?.id)
+                  .map((item) => (
+                    <SwiperSlide key={item.id}>
+                      <div
+                        className="bg-white rounded-xl shadow-sm border border-orange-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                        onClick={() => navigate(`/food/foodDetails/${item.id}`)}
+                      >
+                        <img
+                          src={item.images[0]}
+                          alt={item.name}
+                          className="w-full h-48 object-cover"
+                        />
+                        <div className="p-4">
+                          <h3 className="font-semibold text-gray-800 mb-2 line-clamp-1">
+                            {item.name}
+                          </h3>
+                          <div className="flex items-center justify-between">
+                            <span className="text-orange-600 font-medium">
+                              {item.price.toLocaleString()} VNĐ
+                            </span>
+                            <div className="flex items-center gap-1">
+                              <FaStar className="text-orange-400" size={14} />
+                              <span className="text-sm text-gray-600">
+                                {item.rating?.toFixed(1)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </SwiperSlide>
+                  ))}
+              </Swiper>
+            </div>
+
+            {/* Reviews Section */}
+            <div className="bg-white rounded-2xl shadow-sm border border-orange-100 p-8">
+              <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <span>Đánh giá từ khách hàng</span>
+                <span className="text-sm font-normal text-gray-500">
+                  ({menu?.menuItem?.reviews.length} đánh giá)
+                </span>
+              </h2>
+
+              {menu?.menuItem?.reviews.length > 0 ? (
+                <div className="space-y-6">
+                  {menu?.menuItem?.reviews.map((review, index) => (
+                    <div
+                      key={index}
+                      className="border-b border-gray-100 last:border-0 pb-6 last:pb-0"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold text-gray-800">
+                          {review.nameCustomer}
+                        </h3>
+                        <span className="text-sm text-gray-500">
+                          {review?.reviewDate.substring(0, 10)}
+                        </span>
+                      </div>
+                      <Rating value={review.rating} readOnly size="small" />
+                      <p className="mt-2 text-gray-600">{review.comment}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  Chưa có đánh giá nào
+                </div>
+              )}
+            </div>
+          </div>
 
           {showLoginModal && (
             <>
@@ -347,7 +463,7 @@ const FoodDetails = () => {
             </>
           )}
 
-        </>
+        </div>
       )}</>
 
   );

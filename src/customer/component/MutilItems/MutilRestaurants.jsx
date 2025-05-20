@@ -62,7 +62,7 @@ const MutilRestaurants = ({ restaurants }) => {
     <Box mt={5} >
       {/* Tiêu đề */}
       <h2 style={{ fontSize: "26px", fontWeight: "bold" }}>
-        Ưu đãi Food tại <span style={{ color: "#fe6d2e" }}>PTIT FOOD</span>
+        Ưu đãi Food tại <span style={{ color: "#fe6d2e" }}>MarcusGrabFood</span>
       </h2>
 
       {/* Slider chứa các card */}

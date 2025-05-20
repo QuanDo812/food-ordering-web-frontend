@@ -19,6 +19,7 @@ import {
   TableRow,
   Typography,
   Paper,
+  Divider,
 } from "@mui/material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,15 +34,16 @@ const modalStyle = {
   transform: "translate(-50%, -50%)",
   width: 500,
   bgcolor: "background.paper",
-  borderRadius: 4,
-  boxShadow: 24,
+  borderRadius: 3,
+  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
+  backdropFilter: "blur(10px)",
   p: 4,
 };
 
 const Ingredients = () => {
   const dispatch = useDispatch();
   const { ingredients } = useSelector((store) => store);
-  const jwt = localStorage.getItem("jwt");
+  const jwt = sessionStorage.getItem("jwt");
 
   const [openIngredientModal, setOpenIngredientModal] = useState(false);
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
@@ -51,55 +53,106 @@ const Ingredients = () => {
   };
 
   return (
-    <Box sx={{ p: 4 }} className="w-full h-full">
-      <Typography variant="h4" gutterBottom fontWeight="bold">
-        Quản lý nguyên liệu & phân loại
-      </Typography>
+    <Box sx={{ p: 4 }} className="min-h-screen bg-gradient-to-br from-orange-50 to-white">
+      {/* Header Section */}
+      <Box className="mb-8">
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: 'bold',
+            color: '#ea580c',
+            mb: 2
+          }}
+        >
+          Quản lý nguyên liệu & phân loại
+        </Typography>
+        <Divider sx={{ borderColor: '#fed7aa' }} />
+      </Box>
 
-      <Grid container spacing={5}>
+      <Grid container spacing={4}>
         {/* Danh sách nguyên liệu */}
         <Grid item xs={12} md={7}>
-          <Card elevation={3}>
+          <Card
+            elevation={0}
+            sx={{
+              borderRadius: 3,
+              border: '1px solid #fed7aa',
+              height: '100%',
+              background: 'rgba(255, 255, 255, 0.9)',
+              backdropFilter: 'blur(10px)'
+            }}
+          >
             <CardContent>
               <Box
                 display="flex"
                 alignItems="center"
                 justifyContent="space-between"
-                mb={2}
+                mb={3}
               >
-                <Box display="flex" alignItems="center" gap={1}>
-                  <InventoryIcon color="primary" />
-                  <Typography variant="h6">Danh sách nguyên liệu</Typography>
+                <Box display="flex" alignItems="center" gap={2}>
+                  <InventoryIcon sx={{ color: '#ea580c', fontSize: 28 }} />
+                  <Typography variant="h6" sx={{ fontWeight: 600, color: '#ea580c' }}>
+                    Danh sách nguyên liệu
+                  </Typography>
                 </Box>
                 <Button
                   variant="contained"
-                  color="primary"
                   startIcon={<AddCircleOutline />}
                   onClick={() => setOpenIngredientModal(true)}
+                  sx={{
+                    backgroundColor: '#ea580c',
+                    borderRadius: 2,
+                    textTransform: 'none',
+                    px: 3,
+                    '&:hover': {
+                      backgroundColor: '#c2410c'
+                    }
+                  }}
                 >
                   Thêm nguyên liệu
                 </Button>
               </Box>
 
-              <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
+              <TableContainer
+                component={Paper}
+                sx={{
+                  borderRadius: 2,
+                  boxShadow: 'none',
+                  border: '1px solid #fed7aa',
+                  overflow: 'hidden'
+                }}
+              >
                 <Table>
                   <TableHead>
-                    <TableRow>
-                      <TableCell><strong>ID</strong></TableCell>
-                      <TableCell><strong>Tên</strong></TableCell>
-                      <TableCell><strong>Loại</strong></TableCell>
-                      <TableCell><strong>Giá</strong></TableCell>
-                      <TableCell><strong>Trạng thái</strong></TableCell>
+                    <TableRow sx={{ backgroundColor: '#fff7ed' }}>
+                      <TableCell width="10%" sx={{ fontWeight: 600, color: '#ea580c' }}>ID</TableCell>
+                      <TableCell width="30%" sx={{ fontWeight: 600, color: '#ea580c' }}>Tên</TableCell>
+                      <TableCell width="25%" sx={{ fontWeight: 600, color: '#ea580c' }}>Loại</TableCell>
+                      <TableCell width="20%" sx={{ fontWeight: 600, color: '#ea580c' }}>Giá</TableCell>
+                      <TableCell width="15%" sx={{ fontWeight: 600, color: '#ea580c' }}>Trạng thái</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {ingredients?.ingredients?.map((item) => (
-                      <TableRow key={item?.id} hover>
-                        <TableCell>{item?.id}</TableCell>
-                        <TableCell>{item?.name}</TableCell>
-                        <TableCell>{item?.ingredientCategory?.name}</TableCell>
+                      <TableRow
+                        key={item?.id}
+                        hover
+                        sx={{
+                          '&:last-child td, &:last-child th': { border: 0 },
+                          '&:hover': {
+                            backgroundColor: '#fff7ed'
+                          }
+                        }}
+                      >
+                        <TableCell sx={{ color: '#57534e' }}>{item?.id}</TableCell>
+                        <TableCell sx={{ fontWeight: 500, color: '#292524' }}>{item?.name}</TableCell>
+                        <TableCell sx={{ color: '#57534e' }}>{item?.ingredientCategory?.name}</TableCell>
                         <TableCell>
-                          {item?.price != null ? item?.price.toLocaleString() : ""} VNĐ
+                          {item?.price != null ? (
+                            <Typography sx={{ color: '#ea580c', fontWeight: 500 }}>
+                              {item?.price.toLocaleString()} VNĐ
+                            </Typography>
+                          ) : "-"}
                         </TableCell>
                         <TableCell>
                           <Button
@@ -107,6 +160,12 @@ const Ingredients = () => {
                             variant="outlined"
                             color={item?.inStoke ? "success" : "error"}
                             onClick={() => handleUpdateStock(item?.id)}
+                            sx={{
+                              borderRadius: 5,
+                              textTransform: 'none',
+                              minWidth: 100,
+                              fontWeight: 500
+                            }}
                           >
                             {item?.inStoke ? "Còn hàng" : "Hết hàng"}
                           </Button>
@@ -122,41 +181,79 @@ const Ingredients = () => {
 
         {/* Phân loại nguyên liệu */}
         <Grid item xs={12} md={5}>
-          <Card elevation={3} sx={{ minWidth: 300 }}>
+          <Card
+            elevation={0}
+            sx={{
+              borderRadius: 3,
+              border: '1px solid #fed7aa',
+              height: '100%',
+              background: 'rgba(255, 255, 255, 0.9)',
+              backdropFilter: 'blur(10px)'
+            }}
+          >
             <CardContent>
               <Box
                 display="flex"
                 alignItems="center"
                 justifyContent="space-between"
-                mb={2}
+                mb={3}
               >
-                <Box display="flex" alignItems="center" gap={1}>
-                  <CategoryIcon color="secondary" />
-                  <Typography variant="h6">Phân loại nguyên liệu</Typography>
+                <Box display="flex" alignItems="center" gap={2}>
+                  <CategoryIcon sx={{ color: '#ea580c', fontSize: 28 }} />
+                  <Typography variant="h6" sx={{ fontWeight: 600, color: '#ea580c' }}>
+                    Phân loại nguyên liệu
+                  </Typography>
                 </Box>
                 <Button
                   variant="outlined"
-                  color="secondary"
                   startIcon={<AddCircleOutline />}
                   onClick={() => setOpenCategoryModal(true)}
+                  sx={{
+                    color: '#ea580c',
+                    borderColor: '#ea580c',
+                    borderRadius: 2,
+                    textTransform: 'none',
+                    px: 3,
+                    '&:hover': {
+                      borderColor: '#c2410c',
+                      backgroundColor: '#fff7ed',
+                    }
+                  }}
                 >
                   Thêm loại
                 </Button>
               </Box>
 
-              <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
+              <TableContainer
+                component={Paper}
+                sx={{
+                  borderRadius: 2,
+                  boxShadow: 'none',
+                  border: '1px solid #fed7aa',
+                  overflow: 'hidden'
+                }}
+              >
                 <Table>
                   <TableHead>
-                    <TableRow>
-                      <TableCell><strong>ID</strong></TableCell>
-                      <TableCell><strong>Tên</strong></TableCell>
+                    <TableRow sx={{ backgroundColor: '#fff7ed' }}>
+                      <TableCell width="30%" sx={{ fontWeight: 600, color: '#ea580c' }}>ID</TableCell>
+                      <TableCell width="70%" sx={{ fontWeight: 600, color: '#ea580c' }}>Tên loại</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {ingredients?.category?.map((cat) => (
-                      <TableRow key={cat.id} hover>
-                        <TableCell>{cat.id}</TableCell>
-                        <TableCell>{cat.name}</TableCell>
+                      <TableRow
+                        key={cat.id}
+                        hover
+                        sx={{
+                          '&:last-child td, &:last-child th': { border: 0 },
+                          '&:hover': {
+                            backgroundColor: '#fff7ed'
+                          }
+                        }}
+                      >
+                        <TableCell sx={{ color: '#57534e' }}>{cat.id}</TableCell>
+                        <TableCell sx={{ fontWeight: 500, color: '#292524' }}>{cat.name}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -167,24 +264,32 @@ const Ingredients = () => {
         </Grid>
       </Grid>
 
-      {/* Modal tạo nguyên liệu */}
+      {/* Modals */}
+      {/* Modals with updated style */}
       <Modal
         open={openIngredientModal}
         onClose={() => setOpenIngredientModal(false)}
       >
-        <Box sx={modalStyle}>
+        <Box sx={{
+          ...modalStyle,
+          background: 'rgba(255, 255, 255, 0.95)',
+          border: '1px solid #fed7aa'
+        }}>
           <CreateIngredientForm
             handleClose={() => setOpenIngredientModal(false)}
           />
         </Box>
       </Modal>
 
-      {/* Modal tạo loại nguyên liệu */}
       <Modal
         open={openCategoryModal}
         onClose={() => setOpenCategoryModal(false)}
       >
-        <Box sx={modalStyle}>
+        <Box sx={{
+          ...modalStyle,
+          background: 'rgba(255, 255, 255, 0.95)',
+          border: '1px solid #fed7aa'
+        }}>
           <CreateIngredientCategoryForm
             handleClose={() => setOpenCategoryModal(false)}
           />

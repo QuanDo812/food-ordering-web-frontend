@@ -22,7 +22,7 @@ const RestaurantPage = () => {
   // const searchParams = new URLSearchParams(decodedQueryString);
   // const foodType = searchParams.get("food_type");
   // const foodCategory = searchParams.get("food_category");
-  const jwt = auth?.jwt || localStorage.getItem("jwt")
+  const jwt = auth?.jwt || sessionStorage.getItem("jwt")
 
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const RestaurantPage = () => {
       })
     );
     dispatch(getAllRestaurantsDistance({
-      address: localStorage.getItem("address")
+      address: sessionStorage.getItem("address")
     }))
 
 

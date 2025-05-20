@@ -1,39 +1,16 @@
-// import React, { useEffect } from 'react'
-// import { useDispatch, useSelector } from 'react-redux';
-// import { getUsersOrders } from '../../state/Customer/Order/Action';
-// import OrderCard from '../Order/OrderCard';
-// import OrderCardTest from '../Order/OrderCardTest';
-
-// const Orders = () => {
-//   const {order,auth}=useSelector(store=>store);
-//   const dispatch=useDispatch();
-//   const jwt=localStorage.getItem("jwt")
-
-//   useEffect(()=>{
-//     dispatch(getUsersOrders(jwt))
-//   },[auth.jwt])
-//   return (
-//     <div className='flex items-center flex-col'>
-//       <h1 className='text-xl text-center py-7 font-semibold'>My Orders</h1>
-//       <div className='space-y-5 w-full lg:w-1/2'>
-//      { order?.orders?.map((order)=>order?.orderItems.map((item)=><OrderCardTest status={order?.orderStatus} order={item}/>))}
-//     </div>
-//     </div>
-//   )
-// }
-
-// export default Orders
-
 import { useEffect, useState } from "react";
 import OrderCardTest from "../Order/OrderCardTest";
 import { useDispatch, useSelector } from "react-redux";
 import { getUsersOrders } from "../../../state/Customer/Order/Action";
+import Pagination from '@mui/material/Pagination';
 
 const Orders = () => {
   const [activeTab, setActiveTab] = useState("PAID");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); // Number of items per page
   const { order, auth } = useSelector((store) => store);
   const dispatch = useDispatch();
-  const jwt = localStorage.getItem("jwt");
+  const jwt = sessionStorage.getItem("jwt");
 
   useEffect(() => {
     dispatch(getUsersOrders(auth?.jwt || jwt));
@@ -47,6 +24,18 @@ const Orders = () => {
     }
   ) || [];
 
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentOrders = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+
+  // Handle page change
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Danh sách tab trạng thái
   const tabs = [
     { label: "Đã thanh toán", value: "PAID" },
@@ -54,7 +43,14 @@ const Orders = () => {
     { label: "Đang giao", value: "DELIVERING" },
     { label: "Đã giao", value: "COMPLETED" },
     { label: "Đã hủy", value: "DELETED" },
+    { label: "Chờ xác nhận", value: "CONFIRMING" },
   ];
+
+  // Reset to first page when changing tabs
+  const handleTabChange = (tabValue) => {
+    setActiveTab(tabValue);
+    setCurrentPage(1);
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl">
@@ -70,7 +66,7 @@ const Orders = () => {
                 ? "text-red-500 border-b-2 border-red-500"
                 : "text-gray-500 hover:text-red-500"
               }`}
-            onClick={() => setActiveTab(tab.value)}
+            onClick={() => handleTabChange(tab.value)}
           >
             {tab.label}
           </button>
@@ -79,19 +75,38 @@ const Orders = () => {
 
       {/* Danh sách đơn hàng */}
       <div className="space-y-4">
-        {filteredOrders.length > 0 ? (
-          filteredOrders.map((order, index) => (
-            <div
-              key={index}
-              className="rounded-lg transition-all"
-            >
-              {order?.orderItems?.map((item, i) => (
-                <div className="mt-4">
-                  <OrderCardTest key={i} orders={order} order={item} />
-                </div>
-              ))}
+        {currentOrders.length > 0 ? (
+          <>
+            {currentOrders.map((order, index) => (
+              <div key={index} className="rounded-lg transition-all">
+                {order?.orderItems?.map((item, i) => (
+                  <div className="mt-4">
+                    <OrderCardTest key={i} orders={order} order={item} />
+                  </div>
+                ))}
+              </div>
+            ))}
+
+            {/* Pagination */}
+            <div className="flex justify-center mt-6">
+              <Pagination
+                count={totalPages}
+                page={currentPage}
+                onChange={handlePageChange}
+                color="primary"
+                size="large"
+                sx={{
+                  '& .MuiPaginationItem-root': {
+                    color: '#374151',
+                  },
+                  '& .Mui-selected': {
+                    backgroundColor: '#ef4444 !important',
+                    color: 'white',
+                  },
+                }}
+              />
             </div>
-          ))
+          </>
         ) : (
           <div className="text-center text-gray-500 py-10">
             <p className="text-lg">😢 Không có đơn hàng nào.</p>
@@ -104,5 +119,3 @@ const Orders = () => {
 };
 
 export default Orders;
-
-

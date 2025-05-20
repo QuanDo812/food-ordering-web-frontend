@@ -1,0 +1,17 @@
+/* src/customer/component/Chatbot/Chatbot.css */
+.chatbase-widget {
+    width: 250px !important;
+    height: 400px !important;
+}
+
+/* Chatbot.css */
+iframe.chatbase-widget-iframe {
+    width: 400px !important;
+    height: 600px !important;
+    max-height: 90vh;
+    right: 20px !important;
+    /* điều chỉnh vị trí */
+    bottom: 20px !important;
+    border-radius: 12px;
+    z-index: 9999;
+}

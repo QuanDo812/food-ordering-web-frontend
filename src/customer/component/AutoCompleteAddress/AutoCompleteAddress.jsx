@@ -13,37 +13,9 @@ const AutoCompleteAddress = ({ onSelect }) => {
   const navingate = useNavigate()
 
   // Kiểm tra người dùng đã đăng nhập chưa
-  const isLogin = auth.jwt != null || localStorage.getItem("jwt") != null;
+  const isLogin = auth.jwt != null || sessionStorage.getItem("jwt") != null;
 
-  // useEffect(() => {
-  //   if (query.length < 3) {
-  //     setSuggestions([]);
-  //     return;
-  //   }
 
-  //   // Sử dụng debounce (1 giây)
-  //   const timeoutId = setTimeout(() => {
-  //     fetchSuggestions(query);
-  //   }, 1000);
-
-  //   return () => clearTimeout(timeoutId);
-  // }, [query]);
-
-  // const fetchSuggestions = async (input) => {
-  //   setLoading(true);
-  //   const url = `https://nominatim.openstreetmap.org/search?format=json&countrycodes=VN&limit=5&q=${encodeURIComponent(input)}`;
-
-  //   try {
-  //     const response = await axios.get(url, {
-  //       headers: { "User-Agent": "YourAppName" },
-  //     });
-  //     setSuggestions(response.data);
-  //   } catch (error) {
-  //     console.error("Lỗi khi lấy gợi ý địa chỉ:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleSelect = (address) => {
     setQuery(address.display_name);
@@ -57,7 +29,6 @@ const AutoCompleteAddress = ({ onSelect }) => {
       return;
     }
     console.log("finding..............")
-    // dispatch(getAllRestaurantsDistance({jwt: auth?.jwt || localStorage.getItem("jwt"), address: query}))
     navingate(`/search/${query}`)
   };
 

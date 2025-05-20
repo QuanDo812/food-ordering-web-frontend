@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Tabs, Tab, Box, Typography} from "@mui/material";
+import { Tabs, Tab, Box, Typography } from "@mui/material";
 import { Element, scroller } from "react-scroll";
 import ListFood from "../Food/ListFood";
 import MenuItemCard from "../MenuItem/MenuItemCard";
@@ -9,7 +9,7 @@ import { AnimatePresence } from "framer-motion";
 import MenuDetail from "../MenuItem/MenuDetail";
 
 
-const CategoryCard = ({sections, menuItems}) => {
+const CategoryCard = ({ sections, menuItems }) => {
   const [selectedTab, setSelectedTab] = useState(0);
   const [selectedFood, setSelectedFood] = useState(null);
 
@@ -22,8 +22,8 @@ const CategoryCard = ({sections, menuItems}) => {
     });
   };
 
-  
-  
+
+
 
 
   return (
@@ -36,15 +36,15 @@ const CategoryCard = ({sections, menuItems}) => {
         centered
         textColor="inherit" // 🔥 Giữ nguyên màu đặt trong sx, không bị xanh mặc định
 
-        
+
         sx={{
           position: "sticky",
-          top: 64, // Nếu có Navbar, điều chỉnh lại
+          top: 80, // Nếu có Navbar, điều chỉnh lại
           bgcolor: "white",
           zIndex: 1000,
           "& .MuiTab-root": { color: "black" }, // Màu chữ của Tab
           "& .Mui-selected": { color: "#fe6d2e" }, // Màu chữ khi Tab được chọn
-      "& .MuiTabs-indicator": { backgroundColor: "#fe6d2e" }, // Màu thanh trượt
+          "& .MuiTabs-indicator": { backgroundColor: "#fe6d2e" }, // Màu thanh trượt
 
         }}
       >
@@ -67,17 +67,17 @@ const CategoryCard = ({sections, menuItems}) => {
                 <MenuItemCard menuItem={item}/>
               ))}
             </Box>       */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {menuItems.filter((p) => p.foodCategory.id === section.id).map((item) => (
-                <MenuItemCardTest key={item.id} food={item} onClick={() => setSelectedFood(item)} />
-              ))}
-              {/* Hiển thị FoodDetail khi có món được chọn */}
-      <AnimatePresence>
-      {selectedFood && <MenuDetail food={selectedFood} onClose={() => setSelectedFood(null)} />}
-      </AnimatePresence>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {menuItems.filter((p) => p.foodCategory.id === section.id).map((item) => (
+                  <MenuItemCardTest key={item.id} food={item} onClick={() => setSelectedFood(item)} />
+                ))}
+                {/* Hiển thị FoodDetail khi có món được chọn */}
+                <AnimatePresence>
+                  {selectedFood && <MenuDetail food={selectedFood} onClose={() => setSelectedFood(null)} />}
+                </AnimatePresence>
               </div>
-              
-              
+
+
             </section>
           </Element>
         ))}

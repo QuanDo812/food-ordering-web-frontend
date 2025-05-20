@@ -8,6 +8,8 @@ import FoodDetails from '../customer/component/Food/FoodDetails'
 import CartTest from '../customer/component/Cart/CartTest'
 import PaymentResult from '../customer/component/Payment/PaymentResult'
 import Search from '../customer/component/Search/Search'
+import Chatbot from '../customer/component/Chatbot/Chatbot'
+import '../customer/component/Chatbot/Chatbot.css'
 
 const CustomerRouters = () => {
   return (
@@ -15,14 +17,15 @@ const CustomerRouters = () => {
       <Routes>
         <Route path='/' element={<Home />}></Route>
         <Route path='/my-profile/*' element={<Profile />}></Route>
-        <Route path='/account/*' element={<Home />}></Route>
+        <Route path='/account/*' element={<Auth />}></Route>
         <Route exact path='/restaurant/:title/:id' element={<RestaurantPage />} />
         <Route path='/food/foodDetails/:foodId' element={<FoodDetails />} />
         <Route path='/cart' element={<CartTest />} />
         <Route path='/payment-result/:cash?' element={<PaymentResult />} />
         <Route path='/search/:query?/:foodSearch?' element={<Search />} />
       </Routes>
-      <Auth />
+      <Chatbot />
+
     </div>
   )
 }

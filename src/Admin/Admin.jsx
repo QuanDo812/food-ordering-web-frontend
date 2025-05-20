@@ -18,6 +18,7 @@ import { getRestaurantsCategory } from "../state/Customer/Restaurant/Action";
 import Details from "./Details/Details";
 import AdminNavbar from "./AdminNavbar";
 import { fetchRestaurantsOrder } from "../state/Admin/Order/restaurants.order.action";
+import { getMenuItemsByRestaurantId } from "../state/Customer/Menu/Action";
 
 const Admin = () => {
   const dispatch = useDispatch();
@@ -41,6 +42,12 @@ const Admin = () => {
         })
       );
 
+      dispatch(getMenuItemsByRestaurantId({
+        restaurantId: restaurant.usersRestaurant?.id,
+        jwt: sessionStorage.getItem("jwt"),
+        foodCategory: "",
+      }));
+
       dispatch(
         fetchRestaurantsOrder({
           restaurantId: restaurant.usersRestaurant?.id,
@@ -48,7 +55,6 @@ const Admin = () => {
         })
 
       );
-      console.log("sdhfoidshfo")
     }
   }, [restaurant.usersRestaurant]);
   return (

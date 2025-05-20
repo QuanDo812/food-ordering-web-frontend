@@ -24,16 +24,7 @@ export const registerUser = (reqData) => async (dispatch) => {
 
 
     const { data } = await axios.post(`${API_URL}/auth/signup`, reqData.userData);
-    if (data.jwt) sessionStorage.setItem("jwt", data.jwt)
-    if (data.role == "ROLE_RESTAURANT_OWNER") {
-      reqData.navigate("/admin/restaurant")
-    }
-    else if (data.role == "ROLE_SHIPPER") {
-      reqData.navigate("/shipper")
-    }
-    else {
-      reqData.navigate("/")
-    }
+    reqData.navigate("/login")
     dispatch({ type: REGISTER_SUCCESS, payload: data.jwt });
   } catch (error) {
     console.log("catch error ------ ", error)

@@ -23,7 +23,7 @@ const PaymentResult = () => {
             </svg>
           </div>
         </div>
-        {!cash && <h2 className="text-2xl font-semibold text-gray-800 mt-4">Thanh toán thành công!</h2>}
+        {(!cash || cash == null) && <h2 className="text-2xl font-semibold text-gray-800 mt-4">Thanh toán thành công!</h2>}
         <p className="text-gray-600 mt-2">Cảm ơn bạn đã mua hàng. Đơn hàng của bạn sẽ được xử lý ngay.</p>
         <button onClick={() => navigate("/")} className="mt-4 px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
           Quay lại trang chủ

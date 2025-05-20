@@ -23,7 +23,7 @@ const initialValues = {
 
 const CreateRestaurantForm = () => {
   const dispatch = useDispatch();
-  const jwt = localStorage.getItem("jwt");
+  const jwt = sessionStorage.getItem("jwt");
   const [uploadingImage, setUploadingImage] = useState(false);
 
   const handleSubmit = (values) => {
@@ -47,7 +47,7 @@ const CreateRestaurantForm = () => {
       images: values.images,
     };
     dispatch(createRestaurant({ data, jwt }));
-    console.log(data);
+    console.log(data, jwt);
   };
 
   const formik = useFormik({

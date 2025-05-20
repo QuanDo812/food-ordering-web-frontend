@@ -26,56 +26,69 @@ const CartItemCard = ({ item }) => {
 
   }
   return (
-    <div className="px-5">
-      <div className="lg:flex items-center lg:space-x-5">
-        <div>
-          <img
-            className="w-[5rem] h-[5rem] object-cover"
-            src={item.food.images[0]}
-            alt=""
-          />
-        </div>
+    <div className="flex gap-4 p-4 bg-orange-50/50 rounded-xl">
+      <div className="flex-shrink-0">
+        <img
+          className="w-24 h-24 object-cover rounded-lg"
+          src={item.food.images[0]}
+          alt={item.food.name}
+        />
+      </div>
 
-        <div className="flex items-center justify-between lg:w-[70%]">
-          <div className="space-y-1 lg:space-y-3 w-full ">
-            <p className="">{item.food.name}</p>
-            {
-              <div className="flex justify-between items-center">
-                <div className="flex items-center space-x-1">
-                  <IconButton
-
-                    onClick={() => handleUpdateCartItem(-1)}
-                    sx={{ color: "#FF5722" }}
-                  >
-                    <RemoveCircleOutlineIcon />
-                  </IconButton>
-                  <div className="w-5 h-5 text-xs flex items-center justify-center ">
-                    {item.quantity}
-                  </div>
-
-                  <IconButton
-                    onClick={() => handleUpdateCartItem(1)}
-                    sx={{ color: "#FF5722" }}
-                  >
-                    <AddCircleOutlineIcon />
-                  </IconButton>
-                </div>
-              </div>
-            }
-          </div>
-          <p className="flex items-center">
-            {item?.totalPrice.toLocaleString()} <span className="ml-1">VNĐ</span>
+      <div className="flex-1 space-y-3">
+        <div className="flex justify-between">
+          <h3 className="font-medium text-gray-800">{item.food.name}</h3>
+          <p className="font-semibold text-orange-600">
+            {item?.totalPrice.toLocaleString()} VNĐ
           </p>
-
-
         </div>
 
+        <div className="flex items-center space-x-2">
+          <IconButton
+            onClick={() => handleUpdateCartItem(-1)}
+            className="hover:bg-orange-100"
+            sx={{
+              color: "#ea580c",
+              padding: "4px"
+            }}
+          >
+            <RemoveCircleOutlineIcon fontSize="small" />
+          </IconButton>
 
-      </div>
-      <div className="pt-3 space-x-2">
-        {item?.ingredients.map((item) => <Chip label={item} />)}
-      </div>
+          <span className="w-8 text-center font-medium text-gray-700">
+            {item.quantity}
+          </span>
 
+          <IconButton
+            onClick={() => handleUpdateCartItem(1)}
+            className="hover:bg-orange-100"
+            sx={{
+              color: "#ea580c",
+              padding: "4px"
+            }}
+          >
+            <AddCircleOutlineIcon fontSize="small" />
+          </IconButton>
+        </div>
+
+        {item?.ingredients?.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {item.ingredients.map((ingredient, idx) => (
+              <Chip
+                key={idx}
+                label={ingredient}
+                size="small"
+                sx={{
+                  backgroundColor: '#fff7ed',
+                  color: '#ea580c',
+                  borderColor: '#fed7aa',
+                  fontSize: '0.75rem'
+                }}
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

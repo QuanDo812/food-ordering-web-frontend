@@ -78,17 +78,13 @@ const CartTest = () => {
         },
       };
 
-      console.log("data order", data)
-
 
       dispatch(createOrder(data));
       if (data.order.isPayment == false) {
         navigate(`/payment-result/${true}`)
-        dispatch(clearCartAction());
       }
     }
   };
-  console.log("cartItems: ", cart?.cart?.cartItems)
 
   // Lấy danh sách tỉnh/thành phố
   useEffect(() => {
@@ -124,168 +120,204 @@ const CartTest = () => {
     <>
       {cart?.cart?.cartItems == undefined ? (
         <div className="flex justify-center items-center h-[60vh]">
-          <ClipLoader color="#FF5722" size={60} />
+          <ClipLoader color="#ea580c" size={60} />
         </div>
       ) : (
-
         <>
           {cart?.cart?.cartItems.length > 0 ? (
-            <main className="lg:flex justify-between">
-              <section className="lg:w-[30%] space-y-6 lg:min-h-screen pt-10">
-                <h2 className="text-xl font-semibold mb-4 text-center">Giỏ hàng</h2>
-                {cart?.cart?.cartItems.map((item, i) => (
-                  <CartItemCard key={i} item={item} />
-                ))}
-
-                <Divider />
-                <div className="billDetails px-5 text-sm">
-                  <p className="font-semibold py-5">Chi tiết đơn hàng</p>
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-gray-600">
-                      <p>Tổng giá tiền</p>
-                      <p>{cart?.cart?.total.toLocaleString()} VNĐ</p>
-                    </div>
-                    <div className="flex justify-between text-gray-600">
-                      <p>Phí vận chuyển</p>
-                      <p>10,000 VNĐ</p>
-                    </div>
-                    <div className="flex justify-between text-gray-600">
-                      <p>Thuế</p>
-                      <p>1 %</p>
+            <div className="min-h-screen bg-gradient-to-br from-orange-50 to-white py-8">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <main className="lg:flex lg:space-x-8">
+                  {/* Cart Section */}
+                  <section className="lg:w-[35%] bg-white rounded-2xl shadow-sm border border-orange-100 p-6">
+                    <h2 className="text-2xl font-bold text-gray-800 mb-6">
+                      Giỏ hàng của bạn
+                    </h2>
+                    <div className="space-y-6">
+                      {cart?.cart?.cartItems.map((item, i) => (
+                        <CartItemCard key={i} item={item} />
+                      ))}
                     </div>
 
-                    <Divider />
-                    <div className="flex justify-between text-gray-600">
-                      <p>Tổng thanh toán</p>
-                      <p>{(cart?.cart?.total * 1.01 + 10000).toLocaleString()} VNĐ</p>
+                    <Divider sx={{ my: 4 }} />
+
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-gray-800">Chi tiết thanh toán</h3>
+                      <div className="space-y-3 text-sm">
+                        <div className="flex justify-between text-gray-600">
+                          <span>Tổng giá tiền</span>
+                          <span className="font-medium">{cart?.cart?.total.toLocaleString()} VNĐ</span>
+                        </div>
+                        <div className="flex justify-between text-gray-600">
+                          <span>Phí vận chuyển</span>
+                          <span className="font-medium">10,000 VNĐ</span>
+                        </div>
+                        <div className="flex justify-between text-gray-600">
+                          <span>Thuế</span>
+                          <span className="font-medium">1%</span>
+                        </div>
+                        <Divider />
+                        <div className="flex justify-between text-lg font-semibold text-orange-600">
+                          <span>Tổng thanh toán</span>
+                          <span>{(cart?.cart?.total * 1.01 + 10000).toLocaleString()} VNĐ</span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </section>
-              <Divider orientation="vertical" flexItem />
-              <div className="w-full h-screen max-w-lg mx-auto p-6 bg-white rounded-lg">
-                <h2 className="text-xl font-semibold mb-10 mt-3 text-center">Thanh toán</h2>
+                  </section>
 
-                {/* Chọn địa chỉ */}
-                <div className="mb-4">
-                  <label className="block text-sm font-medium">Chọn Tỉnh/Thành phố</label>
-                  <select
-                    className="mt-1 w-full p-2 border rounded-lg"
-                    value={selectedProvince}
-                    onChange={(e) => setSelectedProvince(e.target.value)}
-                  >
-                    <option value="">Chọn tỉnh/thành phố</option>
-                    {provinces.map((province) => (
-                      <option key={province.code} value={province.code}>
-                        {province.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                  {/* Checkout Form */}
+                  <section className="lg:w-[65%] mt-8 lg:mt-0">
+                    <div className="bg-white rounded-2xl shadow-sm border border-orange-100 p-6">
+                      <h2 className="text-2xl font-bold text-gray-800 mb-8">
+                        Thông tin thanh toán
+                      </h2>
 
-                <div className="mb-4">
-                  <label className="block text-sm font-medium">Chọn Quận/Huyện</label>
-                  <select
-                    className="mt-1 w-full p-2 border rounded-lg"
-                    value={selectedDistrict}
-                    onChange={(e) => setSelectedDistrict(e.target.value)}
-                    disabled={!selectedProvince}
-                  >
-                    <option value="">Chọn quận/huyện</option>
-                    {districts.map((district) => (
-                      <option key={district.code} value={district.code}>
-                        {district.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Address Selection */}
+                        <div className="md:col-span-2 space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Tỉnh/Thành phố
+                              </label>
+                              <select
+                                className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-200 focus:border-orange-400"
+                                value={selectedProvince}
+                                onChange={(e) => setSelectedProvince(e.target.value)}
+                              >
+                                <option value="">Chọn tỉnh/thành phố</option>
+                                {provinces.map((province) => (
+                                  <option key={province.code} value={province.code}>
+                                    {province.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
 
-                <div className="mb-4">
-                  <label className="block text-sm font-medium">Chọn Xã/Phường</label>
-                  <select
-                    className="mt-1 w-full p-2 border rounded-lg"
-                    value={selectedWard}
-                    onChange={(e) => setSelectedWard(e.target.value)}
-                    disabled={!selectedDistrict}
-                  >
-                    <option value="">Chọn xã/phường</option>
-                    {wards.map((ward) => (
-                      <option key={ward.code} value={ward.code}>
-                        {ward.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Quận/Huyện
+                              </label>
+                              <select
+                                className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-200 focus:border-orange-400"
+                                value={selectedDistrict}
+                                onChange={(e) => setSelectedDistrict(e.target.value)}
+                                disabled={!selectedProvince}
+                              >
+                                <option value="">Chọn quận/huyện</option>
+                                {districts.map((district) => (
+                                  <option key={district.code} value={district.code}>
+                                    {district.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
 
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Xã/Phường
+                              </label>
+                              <select
+                                className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-200 focus:border-orange-400"
+                                value={selectedWard}
+                                onChange={(e) => setSelectedWard(e.target.value)}
+                                disabled={!selectedDistrict}
+                              >
+                                <option value="">Chọn xã/phường</option>
+                                {wards.map((ward) => (
+                                  <option key={ward.code} value={ward.code}>
+                                    {ward.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
 
-                <div className="mb-4">
-                  <label className="block text-sm font-medium">Địa chỉ chi tiết(số nhà, tên đường,...)</label>
-                  <textarea
-                    className="mt-1 w-full p-2 border rounded-lg"
-                    rows="1"
-                    value={detailAddress}
-                    onChange={(e) => setDetailAddress(e.target.value)}
-                    placeholder="Nhập địa chỉ chi tiết..."
-                  />
-                </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Địa chỉ chi tiết
+                            </label>
+                            <textarea
+                              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-200 focus:border-orange-400"
+                              rows="2"
+                              value={detailAddress}
+                              onChange={(e) => setDetailAddress(e.target.value)}
+                              placeholder="Số nhà, tên đường..."
+                            />
+                          </div>
+                        </div>
 
-                {/* Chọn phương thức thanh toán */}
-                <div className="mb-4">
-                  <label className="block text-sm font-medium">Phương thức thanh toán</label>
-                  <div className="flex gap-4 mt-2">
-                    <label className="flex items-center">
-                      <input
-                        type="radio"
-                        value="cash"
-                        className="mr-2 accent-orange-500"
-                        checked={paymentMethod === "cash"}
-                        onChange={() => setPaymentMethod("cash")}
-                      />
-                      Tiền mặt
-                    </label>
-                    <label className="flex items-center">
-                      <input
-                        type="radio"
-                        value="atm"
-                        sx={{ color: "#FF5722" }}
-                        checked={paymentMethod === "atm"}
-                        onChange={() => setPaymentMethod("atm")}
-                        className="mr-2 accent-orange-500"
-                      />
-                      Thẻ ATM
-                    </label>
-                  </div>
-                </div>
+                        {/* Payment Method */}
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-3">
+                            Phương thức thanh toán
+                          </label>
+                          <div className="grid grid-cols-2 gap-4">
+                            <label className="flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-orange-200">
+                              <input
+                                type="radio"
+                                value="cash"
+                                checked={paymentMethod === "cash"}
+                                onChange={() => setPaymentMethod("cash")}
+                                className="w-4 h-4 accent-orange-500"
+                              />
+                              <span className="ml-2">Tiền mặt</span>
+                            </label>
+                            <label className="flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-orange-200">
+                              <input
+                                type="radio"
+                                value="atm"
+                                checked={paymentMethod === "atm"}
+                                onChange={() => setPaymentMethod("atm")}
+                                className="w-4 h-4 accent-orange-500"
+                              />
+                              <span className="ml-2">Thẻ ATM</span>
+                            </label>
+                          </div>
+                        </div>
 
-                {/* Ghi chú */}
-                <div className="mb-4">
-                  <label className="block text-sm font-medium">Ghi chú cho người bán</label>
-                  <textarea
-                    className="mt-1 w-full p-2 border rounded-lg"
-                    rows="3"
-                    value={note}
-                    onChange={(e) => setNote(e.target.value)}
-                    placeholder="Nhập ghi chú..."
-                  />
-                </div>
+                        {/* Note */}
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Ghi chú
+                          </label>
+                          <textarea
+                            className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-200 focus:border-orange-400"
+                            rows="3"
+                            value={note}
+                            onChange={(e) => setNote(e.target.value)}
+                            placeholder="Ghi chú cho người bán..."
+                          />
+                        </div>
+                      </div>
 
-                {/* Nút thanh toán */}
-                <button onClick={handleSubmit} className="w-full bg-orange-500 text-white p-2 rounded-lg hover:bg-orange-600">
-                  Thanh toán
-                </button>
+                      <button
+                        onClick={handleSubmit}
+                        className="w-full mt-8 bg-orange-500 text-white py-3 px-6 rounded-lg font-medium hover:bg-orange-600 transition-colors"
+                      >
+                        Thanh toán
+                      </button>
+                    </div>
+                  </section>
+                </main>
               </div>
-
-            </main>
+            </div>
           ) : (
-            <div className="flex h-[90vh] justify-center items-center">
-              <div className="text-center space-y-5">
-                <RemoveShoppingCartIcon sx={{ width: "10rem", height: "10rem" }} />
-                <p className="font-bold text-3xl">Your Cart Is Empty</p>
+            <div className="flex h-[90vh] justify-center items-center bg-gradient-to-br from-orange-50 to-white">
+              <div className="text-center space-y-6">
+                <RemoveShoppingCartIcon sx={{ width: "8rem", height: "8rem", color: '#ea580c' }} />
+                <p className="font-bold text-2xl text-gray-800">Giỏ hàng trống</p>
+                <button
+                  onClick={() => navigate('/')}
+                  className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+                >
+                  Tiếp tục mua sắm
+                </button>
               </div>
             </div>
           )}
-
-        </>)}
+        </>
+      )}
     </>
   );
 };

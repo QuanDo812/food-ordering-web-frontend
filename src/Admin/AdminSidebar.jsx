@@ -16,21 +16,21 @@ import CategoryIcon from '@mui/icons-material/Category';
 import FastfoodIcon from '@mui/icons-material/Fastfood';
 
 const menu = [
-  { title: "Dashboard", icon: <Dashboard />, path: "/" },
-  { title: "Orders", icon: <ShoppingBagIcon />, path: "/orders" },
-  { title: "Menu", icon: <ShopTwoIcon />, path: "/menu" },
-  { title: "Food Category", icon: <CategoryIcon />, path: "/category" },
-  { title: "Ingredients", icon: <FastfoodIcon />, path: "/ingredients" },
-  { title: "Events", icon: <EventIcon />, path: "/event" },
-  { title: "Details", icon: <AdminPanelSettingsIcon />, path: "/details" },
-  { title: "Logout", icon: <LogoutIcon />, path: "/" },
-  
+  { title: "Thống kê", icon: <Dashboard />, path: "/" },
+  { title: "Đơn hàng", icon: <ShoppingBagIcon />, path: "/orders" },
+  { title: "Thực đơn", icon: <ShopTwoIcon />, path: "/menu" },
+  { title: "Loại món ăn", icon: <CategoryIcon />, path: "/category" },
+  { title: "Thành phần", icon: <FastfoodIcon />, path: "/ingredients" },
+  // { title: "Events", icon: <EventIcon />, path: "/event" },
+  { title: "Chi tiết", icon: <AdminPanelSettingsIcon />, path: "/details" },
+  { title: "Đăng xuất", icon: <LogoutIcon />, path: "/" },
+
 ];
 export default function AdminSidebar({ handleClose, open }) {
   const isSmallScreen = useMediaQuery("(max-width:1080px)");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const {restaurant}=useSelector(store=>store);
+  const { restaurant } = useSelector(store => store);
 
 
   const handleNavigate = (item) => {
@@ -53,8 +53,8 @@ export default function AdminSidebar({ handleClose, open }) {
         borderRight: "1px solid #ccc",
         // boxShadow: "2px 0px 5px rgba(0,0,0,0.1)",
         position: "sticky",
-    top: 0, // Cố định sidebar ở trên cùng
-left: 0,
+        top: 0, // Cố định sidebar ở trên cùng
+        left: 0,
         padding: 2,
       }}
     >
@@ -63,22 +63,22 @@ left: 0,
       <List>
         {menu.map((item, index) => (
           <ListItem
-          button
-          
-          onClick={()=>handleNavigate(item)}
-          key={index}
-          sx={{
-            marginTop: "10px",
-            cursor: 'pointer',
-            "&:hover": {
-              backgroundColor: "#f5f5f5", // Màu nền khi hover
-              "& .MuiListItemText-primary": { color: "#ff5733" }, // Màu chữ khi hover
-            },
-          }}
-        >
-          <ListItemIcon>{item.icon}</ListItemIcon>
-          <ListItemText primary={item.title} />
-        </ListItem>
+            button
+
+            onClick={() => handleNavigate(item)}
+            key={index}
+            sx={{
+              marginTop: "10px",
+              cursor: 'pointer',
+              "&:hover": {
+                backgroundColor: "#f5f5f5", // Màu nền khi hover
+                "& .MuiListItemText-primary": { color: "#ff5733" }, // Màu chữ khi hover
+              },
+            }}
+          >
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.title} />
+          </ListItem>
         ))}
       </List>
     </Box>

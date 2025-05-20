@@ -7,7 +7,7 @@ import { api } from "../../../customer/component/config/api";
 export const getAllRestaurantsDistance = (req) => {
   return async (dispatch) => {
     dispatch({ type: GET_ALL_RESTAURANTS_REQUEST });
-    localStorage.setItem("address", req.address)
+    sessionStorage.setItem("address", req.address)
     console.log("req distance: ", req)
     try {
       const { data } = await api.get(`/api/distance?address=${req.address}`);

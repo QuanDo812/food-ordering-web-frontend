@@ -28,7 +28,7 @@ function App() {
 
     }
     dispatch(getAllRestaurantsDistance({ address: "Hoc vien cong nghe buu chinh vien thong" }));
-  }, []);
+  }, [auth.jwt, jwt]);
 
   useEffect(() => {
     if (auth.user?.role == "ROLE_RESTAURANT_OWNER") {
@@ -38,13 +38,16 @@ function App() {
     if (auth.user?.role == "ROLE_SHIPPER") {
       navigate('/shipper/')
     }
+    if (auth.user?.role == "ROLE_CUSTOMER") {
+      navigate('/')
+    }
   }, [auth.user]);
 
   return (
 
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       {/* Navbar */}
-      <Box sx={{ marginBottom: "40px" }}>
+      <Box sx={{}}>
         <Navbar />
       </Box>
 
